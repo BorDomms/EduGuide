@@ -187,6 +187,28 @@ function toggleDropdown() {
   document.getElementById('user-dropdown').classList.toggle('hidden');
 }
 
+// Dark Mode Functions
+function initDarkMode() {
+  const darkModeToggle = document.getElementById('dark-mode-toggle');
+  if (!darkModeToggle) return;
+  
+  // Check for saved preference
+  const savedMode = localStorage.getItem('eg_dark_mode');
+  if (savedMode === 'enabled') {
+    document.body.classList.add('dark-mode');
+  }
+  
+  darkModeToggle.addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    
+    if (document.body.classList.contains('dark-mode')) {
+      localStorage.setItem('eg_dark_mode', 'enabled');
+    } else {
+      localStorage.setItem('eg_dark_mode', 'disabled');
+    }
+  });
+}
+
 // Event listeners setup
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.auth-tab').forEach(tab => {
@@ -266,4 +288,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (event === 'SIGNED_IN' && session) enterApp(session.user);
     });
   }
+  
+  initDarkMode();
 });

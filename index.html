@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>EduGuide — AI-Powered Student Reviewer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduGuide — AI-Powered Student Reviewer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
@@ -39,6 +39,7 @@
         <button class="auth-tab" data-auth-tab="signup">Sign Up</button>
       </div>
 
+      <!-- Login Form -->
       <div id="login-form" class="auth-form">
         <h2>Welcome back</h2>
         <p class="sub">Sign in to continue your study session.</p>
@@ -54,11 +55,17 @@
         <button class="btn-primary" id="login-btn">Sign in</button>
         <div class="divider">or continue with</div>
         <button class="btn-google" id="google-btn">
-          <svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/><path fill="#34A853" d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09C3.515 21.3 7.615 24 12.255 24z"/><path fill="#FBBC05" d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62h-3.98a11.86 11.86 0 000 10.76l3.98-3.09z"/><path fill="#EA4335" d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C18.205 1.19 15.495 0 12.255 0c-4.64 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+          <svg class="google-icon" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/>
+            <path fill="#34A853" d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09C3.515 21.3 7.615 24 12.255 24z"/>
+            <path fill="#FBBC05" d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62h-3.98a11.86 11.86 0 000 10.76l3.98-3.09z"/>
+            <path fill="#EA4335" d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C18.205 1.19 15.495 0 12.255 0c-4.64 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/>
+          </svg>
           Continue with Google
         </button>
       </div>
 
+      <!-- Signup Form -->
       <div id="signup-form" class="auth-form hidden">
         <h2>Create account</h2>
         <p class="sub">Join EduGuide and transform how you study.</p>
@@ -78,7 +85,12 @@
         <button class="btn-primary" id="signup-btn">Create account</button>
         <div class="divider">or continue with</div>
         <button class="btn-google" id="google-btn-2">
-          <svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/><path fill="#34A853" d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09C3.515 21.3 7.615 24 12.255 24z"/><path fill="#FBBC05" d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62h-3.98a11.86 11.86 0 000 10.76l3.98-3.09z"/><path fill="#EA4335" d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C18.205 1.19 15.495 0 12.255 0c-4.64 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+          <svg class="google-icon" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/>
+            <path fill="#34A853" d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09C3.515 21.3 7.615 24 12.255 24z"/>
+            <path fill="#FBBC05" d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62h-3.98a11.86 11.86 0 000 10.76l3.98-3.09z"/>
+            <path fill="#EA4335" d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C18.205 1.19 15.495 0 12.255 0c-4.64 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/>
+          </svg>
           Continue with Google
         </button>
       </div>
@@ -106,7 +118,7 @@
       <input type="text" id="cfg-cerebras-key" placeholder="csk-..." />
       <div class="config-hint">Get from <a href="https://cloud.cerebras.ai" target="_blank" style="color:var(--violet)">cloud.cerebras.ai</a> - Free tier: 14,400 requests/day</div>
     </div>
-    <div style="display:flex;gap:10px;margin-top:1.5rem;">
+    <div style="display: flex; gap: 10px; margin-top: 1.5rem;">
       <button class="btn-jade" id="save-config-btn" style="flex:1">Save & Continue</button>
       <button class="btn-outline" id="skip-config-btn">Demo Mode</button>
     </div>
@@ -118,22 +130,32 @@
 ════════════════════════════════════════ -->
 <div id="app-screen" class="hidden">
 
+  <!-- Topbar -->
   <header class="topbar">
     <div class="topbar-brand">
       <div class="topbar-logo">🎓</div>
       <span class="topbar-name">EduGuide</span>
     </div>
-    <div class="topbar-user" id="user-btn">
-      <div class="user-avatar" id="user-avatar">?</div>
-      <span id="user-name-display">User</span>
-      <span style="font-size:12px;color:var(--ink-3)">▾</span>
-      <div id="user-dropdown" class="user-dropdown hidden">
-        <button class="user-dropdown-item" data-page="settings">⚙️ Settings</button>
-        <button class="user-dropdown-item danger" id="logout-btn">← Sign out</button>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <!-- Dark Mode Toggle Button -->
+      <div class="dark-mode-toggle" id="dark-mode-toggle">
+        <span class="toggle-icon">☀️</span>
+        <span class="toggle-icon">🌙</span>
+      </div>
+      <!-- User Dropdown -->
+      <div class="topbar-user" id="user-btn">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <span id="user-name-display">User</span>
+        <span style="font-size: 12px; color: var(--ink-3);">▾</span>
+        <div id="user-dropdown" class="user-dropdown hidden">
+          <button class="user-dropdown-item" data-page="settings">⚙️ Settings</button>
+          <button class="user-dropdown-item danger" id="logout-btn">← Sign out</button>
+        </div>
       </div>
     </div>
   </header>
 
+  <!-- Sidebar -->
   <nav class="sidebar">
     <div class="sidebar-label">Study Tools</div>
     <button class="sidebar-item active" data-page="dashboard">
@@ -148,40 +170,73 @@
     <button class="sidebar-item" data-page="notes">
       <div class="sidebar-icon">📚</div> My Notes
     </button>
-    <div class="sidebar-label" style="margin-top:8px;">Assistant</div>
+
+    <div class="sidebar-label" style="margin-top: 8px;">Assistant</div>
     <button class="sidebar-item" data-page="chat">
       <div class="sidebar-icon">💬</div> AI Tutor
     </button>
-    <div style="flex:1"></div>
+
+    <div style="flex: 1;"></div>
+
     <div class="sidebar-label">Account</div>
     <button class="sidebar-item" data-page="settings">
       <div class="sidebar-icon">⚙️</div> Settings
     </button>
   </nav>
 
+  <!-- Main Content -->
   <main class="main-content">
 
+    <!-- Dashboard Page -->
     <div id="page-dashboard" class="page active">
       <div class="page-header">
         <h1 id="welcome-msg">Good morning 👋</h1>
         <p>Here's your study overview.</p>
       </div>
       <div class="stats-grid">
-        <div class="stat-card"><div class="stat-icon jade">📄</div><div class="stat-value" id="stat-notes">0</div><div class="stat-label">Notes Created</div></div>
-        <div class="stat-card"><div class="stat-icon violet">🎯</div><div class="stat-value" id="stat-quizzes">0</div><div class="stat-label">Quizzes Taken</div></div>
-        <div class="stat-card"><div class="stat-icon amber">⭐</div><div class="stat-value" id="stat-avg">—</div><div class="stat-label">Avg. Score</div></div>
-        <div class="stat-card"><div class="stat-icon rose">🔥</div><div class="stat-value" id="stat-streak">0</div><div class="stat-label">Day Streak</div></div>
+        <div class="stat-card">
+          <div class="stat-icon jade">📄</div>
+          <div class="stat-value" id="stat-notes">0</div>
+          <div class="stat-label">Notes Created</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon violet">🎯</div>
+          <div class="stat-value" id="stat-quizzes">0</div>
+          <div class="stat-label">Quizzes Taken</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon amber">⭐</div>
+          <div class="stat-value" id="stat-avg">—</div>
+          <div class="stat-label">Avg. Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon rose">🔥</div>
+          <div class="stat-value" id="stat-streak">0</div>
+          <div class="stat-label">Day Streak</div>
+        </div>
       </div>
       <div class="two-col">
-        <div class="card"><div class="card-title">Recent Notes <button class="btn-outline" data-page="reviewer" style="padding:6px 12px;font-size:0.8rem;">+ New</button></div><div id="recent-notes-list"></div></div>
-        <div class="card"><div class="card-title">Subject Proficiency</div><div id="proficiency-list"></div></div>
+        <div class="card">
+          <div class="card-title">
+            Recent Notes
+            <button class="btn-outline" data-page="reviewer" style="padding: 6px 12px; font-size: 0.8rem;">+ New</button>
+          </div>
+          <div id="recent-notes-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Subject Proficiency</div>
+          <div id="proficiency-list"></div>
+        </div>
       </div>
     </div>
 
+    <!-- Reviewer Page -->
     <div id="page-reviewer" class="page">
       <div class="page-header">
-        <h1>📄 Reviewer</h1><p>Upload a document or paste text — AI will summarize it with key points.</p>
+        <h1>📄 Reviewer</h1>
+        <p>Upload a document or paste text — AI will summarize it with key points.</p>
       </div>
+
       <div class="upload-zone" id="upload-zone">
         <input type="file" id="file-input" accept=".pdf,.txt,.docx,.md" />
         <div class="upload-icon">📤</div>
@@ -194,78 +249,93 @@
           <span class="file-badge">.MD</span>
         </div>
       </div>
+
       <div class="or-divider">or paste text directly</div>
+
       <textarea class="text-input-area" id="text-input" placeholder="Paste your notes, lecture content, or any text you want to study…"></textarea>
-      <div class="field" style="margin-top:1rem">
+
+      <div class="field" style="margin-top: 1rem;">
         <label>Note Title (optional)</label>
-        <input type="text" id="note-title-input" placeholder="e.g. Chapter 3 — Cell Biology" style="padding:11px 14px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius);font-size:0.9375rem;color:var(--ink);width:100%;" />
+        <input type="text" id="note-title-input" placeholder="e.g. Chapter 3 — Cell Biology" />
       </div>
+
       <div class="btn-row">
         <button class="btn-jade" id="summarize-btn"><span>✨</span> Summarize with AI</button>
         <button class="btn-outline" id="clear-reviewer-btn">Clear</button>
       </div>
-      <div id="summary-section" class="hidden" style="margin-top:2rem">
+
+      <!-- Summary Output -->
+      <div id="summary-section" class="hidden" style="margin-top: 2rem;">
         <div class="summary-output">
           <div class="summary-header">
-            <div class="summary-title">🧠 AI Summary <span id="summary-source-label" style="font-size:0.8rem;color:var(--ink-3);font-weight:400;"></span>
+            <div class="summary-title">
+              🧠 AI Summary
+              <span id="summary-source-label" style="font-size: 0.8rem; color: var(--ink-3); font-weight: 400;"></span>
             </div>
-            <button class="btn-outline" id="save-note-btn" style="padding:7px 14px;font-size:0.8125rem;gap:6px;"><span>💾</span> Save Note</button>
+            <button class="btn-outline" id="save-note-btn" style="padding: 7px 14px; font-size: 0.8125rem; gap: 6px;">
+              <span>💾</span> Save Note
+            </button>
           </div>
-          <div class="summary-body"><div id="summary-text"></div>
-          <div class="key-points">
-            <h4>Key Points</h4>
-            <div id="key-points-list"></div>
+          <div class="summary-body">
+            <div id="summary-text"></div>
+            <div class="key-points">
+              <h4>Key Points</h4>
+              <div id="key-points-list"></div>
+            </div>
+          </div>
+          <div class="quiz-trigger-section">
+            <div class="quiz-trigger-text">
+              <p>Ready to test your knowledge?</p>
+              <span>Generate a quiz based on this summary</span>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <label style="font-size: 0.875rem; font-weight: 500; color: var(--ink-2);">Questions:</label>
+                <select id="quiz-question-count" style="padding: 8px 12px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--surface); font-family: var(--font); font-size: 0.875rem; cursor: pointer;">
+                  <option value="3">3 questions</option>
+                  <option value="5" selected>5 questions</option>
+                  <option value="8">8 questions</option>
+                  <option value="10">10 questions</option>
+                  <option value="15">15 questions</option>
+                  <option value="20">20 questions</option>
+                  <option value="25">25 questions</option>
+                </select>
+              </div>
+              <button class="btn-jade" id="generate-quiz-btn" style="padding: 11px 20px;">🎯 Generate Quiz</button>
+            </div>
           </div>
         </div>
-        <div class="quiz-trigger-section">
-          <div class="quiz-trigger-text">
-            <p>Ready to test your knowledge?</p>
-            <span>Generate a quiz based on this summary</span>
+      </div>
+
+      <!-- Loading Skeleton -->
+      <div id="summary-loading" class="hidden" style="margin-top: 2rem;">
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem;">
+            <div class="spinner dark"></div>
+            <span style="font-size: 0.9rem; color: var(--ink-3);">AI is reading your document…</span>
           </div>
-          <div style="display: flex; gap: 12px; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <label style="font-size: 0.875rem; font-weight: 500; color: var(--ink-2);">Questions:</label>
-              <select id="quiz-question-count" style="padding: 8px 12px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--surface); font-family: var(--font); font-size: 0.875rem; cursor: pointer;">
-                <option value="3">3 questions</option>
-                <option value="5" selected>5 questions</option>
-                <option value="8">8 questions</option>
-                <option value="10">10 questions</option>
-                <option value="15">15 questions</option>
-                <option value="20">20 questions</option>
-                <option value="25">25 questions</option>
-              </select>
-            </div>
-            <button class="btn-jade" id="generate-quiz-btn" style="padding:11px 20px;">🎯 Generate Quiz</button>
-          </div>
+          <div class="shimmer" style="height: 16px; width: 80%; margin-bottom: 10px;"></div>
+          <div class="shimmer" style="height: 16px; width: 95%; margin-bottom: 10px;"></div>
+          <div class="shimmer" style="height: 16px; width: 70%; margin-bottom: 10px;"></div>
+          <div class="shimmer" style="height: 16px; width: 88%; margin-bottom: 10px;"></div>
+          <div class="shimmer" style="height: 16px; width: 60%;"></div>
         </div>
       </div>
     </div>
 
-    <div id="summary-loading" class="hidden" style="margin-top:2rem">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:1.5rem;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.5rem">
-          <div class="spinner dark"></div>
-          <span style="font-size:0.9rem;color:var(--ink-3)">AI is reading your document…</span>
-        </div>
-        <div class="shimmer" style="height:16px;width:80%;margin-bottom:10px"></div>
-        <div class="shimmer" style="height:16px;width:95%;margin-bottom:10px"></div>
-        <div class="shimmer" style="height:16px;width:70%;margin-bottom:10px"></div>
-        <div class="shimmer" style="height:16px;width:88%;margin-bottom:10px"></div>
-        <div class="shimmer" style="height:16px;width:60%"></div>
-      </div>
-    </div>
-  </div>
-
+    <!-- Quiz Page -->
     <div id="page-quiz" class="page">
       <div class="page-header">
         <h1>🎯 Quiz</h1>
         <p>Test your knowledge. Results are recorded to your proficiency.</p>
       </div>
+
+      <!-- Quiz Landing (No Active Quiz) -->
       <div id="quiz-landing">
-        <div style="max-width:540px;margin:0 auto;text-align:center;padding:3rem 0;">
-          <div style="font-size:4rem;margin-bottom:1.5rem">🎯</div>
-          <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:0.75rem">No quiz loaded</h2>
-          <p style="color:var(--ink-3);margin-bottom:1rem">Go to the Reviewer tab, summarize a document, and click "Generate Quiz" — or generate one from any saved note.</p>
+        <div style="max-width: 540px; margin: 0 auto; text-align: center; padding: 3rem 0;">
+          <div style="font-size: 4rem; margin-bottom: 1.5rem;">🎯</div>
+          <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem;">No quiz loaded</h2>
+          <p style="color: var(--ink-3); margin-bottom: 1rem;">Go to the Reviewer tab, summarize a document, and click "Generate Quiz" — or generate one from any saved note.</p>
           <div style="display: flex; gap: 12px; justify-content: center; align-items: center; margin-bottom: 1.5rem;">
             <label style="font-size: 0.875rem; font-weight: 500; color: var(--ink-2);">Number of questions:</label>
             <select id="quiz-question-count-landing" style="padding: 8px 12px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--surface); font-family: var(--font); font-size: 0.875rem; cursor: pointer;">
@@ -278,24 +348,28 @@
               <option value="25">25 questions</option>
             </select>
           </div>
-          <button class="btn-violet" data-page="reviewer" style="background:var(--violet);color:#fff;padding:13px 28px;border-radius:var(--radius);font-size:0.9375rem;font-weight:600;border:none;cursor:pointer;">Go to Reviewer</button>
+          <button class="btn-violet" data-page="reviewer" style="background: var(--violet); color: #fff; padding: 13px 28px; border-radius: var(--radius); font-size: 0.9375rem; font-weight: 600; border: none; cursor: pointer;">Go to Reviewer</button>
         </div>
       </div>
+
+      <!-- Active Quiz -->
       <div id="quiz-active" class="hidden">
         <div class="quiz-container">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
             <span id="quiz-progress-label"></span>
             <span id="quiz-score-live"></span>
           </div>
           <div class="quiz-progress-bar">
-            <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div>
+            <div class="quiz-progress-fill" id="quiz-progress-fill" style="width: 0%;"></div>
           </div>
           <div id="quiz-question-area"></div>
           <div class="quiz-nav">
-            <button class="btn-jade" id="next-btn" style="padding:11px 24px;">Next →</button>
+            <button class="btn-jade" id="next-btn" style="padding: 11px 24px;">Next →</button>
           </div>
         </div>
       </div>
+
+      <!-- Results Screen -->
       <div id="quiz-results" class="hidden">
         <div class="results-card fade-in">
           <div class="results-score-ring">
@@ -324,34 +398,96 @@
               <div class="result-stat-lbl">Total</div>
             </div>
           </div>
-          <div style="display:flex;gap:10px;">
-            <button class="btn-jade" id="retake-quiz-btn" style="flex:1">↺ Retake</button>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-jade" id="retake-quiz-btn" style="flex: 1;">↺ Retake</button>
             <button class="btn-outline" data-page="dashboard">Dashboard</button>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Notes Library Page -->
     <div id="page-notes" class="page">
-      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;"><div><h1>📚 My Notes</h1><p>Your saved summaries and documents.</p></div><button class="btn-jade" data-page="reviewer" style="padding:10px 18px;font-size:0.875rem;">+ New Note</button></div>
+      <div class="page-header" style="display: flex; align-items: flex-start; justify-content: space-between;">
+        <div>
+          <h1>📚 My Notes</h1>
+          <p>Your saved summaries and documents.</p>
+        </div>
+        <button class="btn-jade" data-page="reviewer" style="padding: 10px 18px; font-size: 0.875rem;">+ New Note</button>
+      </div>
       <div class="notes-grid" id="notes-grid"></div>
     </div>
 
+    <!-- AI Tutor Chat Page -->
     <div id="page-chat" class="page">
-      <div class="page-header"><h1>💬 AI Tutor</h1><p>Ask questions about anything you're studying. Powered by Cerebras AI.</p></div>
-      <div class="chat-wrap"><div class="chat-suggestions" id="chat-suggestions"><button class="chat-suggestion" data-suggestion="Explain the concept of mitosis in simple terms">🔬 Explain mitosis</button><button class="chat-suggestion" data-suggestion="What are the key differences between DNA and RNA?">🧬 DNA vs RNA</button><button class="chat-suggestion" data-suggestion="Help me understand photosynthesis step by step">🌿 Photosynthesis</button><button class="chat-suggestion" data-suggestion="Can you quiz me on the French Revolution?">🏛️ French Revolution quiz</button></div><div class="chat-messages" id="chat-messages"><div class="chat-msg ai"><div class="chat-avatar ai">🧠</div><div class="chat-bubble">Hey! I'm your AI study tutor. Ask me anything about your subjects — I can explain concepts, help you understand difficult material, quiz you, or discuss your notes. What are we studying today?</div></div></div><div class="chat-input-row"><textarea class="chat-input" id="chat-input" placeholder="Ask anything…" rows="1"></textarea><button class="btn-send" id="chat-send-btn">➤</button></div></div>
+      <div class="page-header">
+        <h1>💬 AI Tutor</h1>
+        <p>Ask questions about anything you're studying. Powered by Cerebras AI.</p>
+      </div>
+      <div class="chat-wrap">
+        <div class="chat-suggestions" id="chat-suggestions">
+          <button class="chat-suggestion" data-suggestion="Explain the concept of mitosis in simple terms">🔬 Explain mitosis</button>
+          <button class="chat-suggestion" data-suggestion="What are the key differences between DNA and RNA?">🧬 DNA vs RNA</button>
+          <button class="chat-suggestion" data-suggestion="Help me understand photosynthesis step by step">🌿 Photosynthesis</button>
+          <button class="chat-suggestion" data-suggestion="Can you quiz me on the French Revolution?">🏛️ French Revolution quiz</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-msg ai">
+            <div class="chat-avatar ai">🧠</div>
+            <div class="chat-bubble">
+              Hey! I'm your AI study tutor. Ask me anything about your subjects — I can explain concepts, help you understand difficult material, quiz you, or discuss your notes. What are we studying today?
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="chat-input" placeholder="Ask anything…" rows="1"></textarea>
+          <button class="btn-send" id="chat-send-btn">➤</button>
+        </div>
+      </div>
     </div>
 
+    <!-- Settings Page -->
     <div id="page-settings" class="page">
-      <div class="page-header"><h1>⚙️ Settings</h1><p>Manage your API keys and preferences.</p></div>
-      <div style="max-width:560px;"><div class="card" style="margin-bottom:1.5rem"><div class="card-title">API Configuration</div><div class="config-field"><label>Supabase URL</label><input type="text" id="settings-supabase-url" placeholder="https://xxxx.supabase.co" /></div><div class="config-field"><label>Supabase Anon Key</label><input type="password" id="settings-supabase-key" placeholder="eyJ..." /></div><div class="config-field"><label>Cerebras API Key</label><input type="password" id="settings-cerebras-key" placeholder="csk-..." /><div class="config-hint">Get from <a href="https://cloud.cerebras.ai" target="_blank" style="color:var(--violet)">cloud.cerebras.ai</a> - Free tier: 14,400 requests/day</div></div><button class="btn-jade" id="save-settings-btn">Save Configuration</button></div><div class="card"><div class="card-title">Data</div><p style="font-size:0.875rem;color:var(--ink-3);margin-bottom:1rem">Manage your local study data stored in this browser.</p><div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="btn-outline" id="export-data-btn" style="font-size:0.875rem;padding:9px 16px;">📤 Export Notes</button><button class="btn-outline" id="clear-data-btn" style="font-size:0.875rem;padding:9px 16px;color:var(--danger);border-color:var(--danger)">🗑 Clear All Data</button></div></div></div>
+      <div class="page-header">
+        <h1>⚙️ Settings</h1>
+        <p>Manage your API keys and preferences.</p>
+      </div>
+      <div style="max-width: 560px;">
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-title">API Configuration</div>
+          <div class="config-field">
+            <label>Supabase URL</label>
+            <input type="text" id="settings-supabase-url" placeholder="https://xxxx.supabase.co" />
+          </div>
+          <div class="config-field">
+            <label>Supabase Anon Key</label>
+            <input type="password" id="settings-supabase-key" placeholder="eyJ..." />
+          </div>
+          <div class="config-field">
+            <label>Cerebras API Key</label>
+            <input type="password" id="settings-cerebras-key" placeholder="csk-..." />
+            <div class="config-hint">Get from <a href="https://cloud.cerebras.ai" target="_blank" style="color: var(--violet);">cloud.cerebras.ai</a> - Free tier: 14,400 requests/day</div>
+          </div>
+          <button class="btn-jade" id="save-settings-btn">Save Configuration</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Data</div>
+          <p style="font-size: 0.875rem; color: var(--ink-3); margin-bottom: 1rem;">Manage your local study data stored in this browser.</p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn-outline" id="export-data-btn" style="font-size: 0.875rem; padding: 9px 16px;">📤 Export Notes</button>
+            <button class="btn-outline" id="clear-data-btn" style="font-size: 0.875rem; padding: 9px 16px; color: var(--danger); border-color: var(--danger);">🗑 Clear All Data</button>
+          </div>
+        </div>
+      </div>
     </div>
 
   </main>
 </div>
 
+<!-- Toast Container -->
 <div class="toast-container" id="toast-container"></div>
 
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="js/utils.js"></script>

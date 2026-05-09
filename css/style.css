@@ -183,8 +183,8 @@ a { color: inherit; text-decoration: none; }
   transition: var(--transition);
 }
 .auth-tab.active {
-  background: var(--surface);
-  color: var(--ink);
+  background: var(--violet-soft);
+  color: var(--violet);
   box-shadow: var(--shadow);
 }
 .auth-form h2 {
@@ -1160,6 +1160,176 @@ a { color: inherit; text-decoration: none; }
 .btn-violet {
   background: var(--violet);
   color: #fff;
+}
+
+/* ── DARK MODE TOGGLE BUTTON ─────────────────────────── */
+.dark-mode-toggle {
+  background: var(--surface-2);
+  border: 1.5px solid var(--border-med);
+  border-radius: 40px;
+  padding: 8px;
+  width: 64px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+}
+
+.dark-mode-toggle:hover {
+  background: var(--surface-3);
+}
+
+.toggle-icon {
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: var(--transition);
+  z-index: 1;
+}
+
+.dark-mode-toggle::before {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--violet);
+  transition: transform 0.3s ease;
+  left: 4px;
+  top: 2px;
+}
+
+body.dark-mode .dark-mode-toggle::before {
+  transform: translateX(26px);
+  background: var(--jade);
+}
+
+body.dark-mode .dark-mode-toggle {
+  background: var(--surface-3);
+  border-color: var(--violet);
+}
+
+/* ── DARK MODE COLORS ─────────────────────────────────── */
+body.dark-mode {
+  --ink: #e4e4e7;
+  --ink-2: #d4d4d8;
+  --ink-3: #a1a1aa;
+  --ink-4: #71717a;
+  --surface: #18181b;
+  --surface-2: #27272a;
+  --surface-3: #3f3f46;
+  --border: rgba(255,255,255,0.08);
+  --border-med: rgba(255,255,255,0.12);
+  --shadow: 0 2px 16px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.4);
+}
+
+body.dark-mode .auth-panel-left {
+  background: linear-gradient(145deg, #0a0a1a 0%, #1a1a3a 50%, #0a0a1a 100%);
+}
+
+body.dark-mode .auth-panel-right {
+  background: var(--surface);
+}
+
+body.dark-mode .auth-tab.active {
+  background: rgba(108,92,231,0.25);
+  color: var(--violet);
+}
+
+body.dark-mode .field input,
+body.dark-mode .field textarea,
+body.dark-mode .text-input-area,
+body.dark-mode .config-field input,
+body.dark-mode .chat-input,
+body.dark-mode select {
+  background: var(--surface-2);
+  color: var(--ink);
+  border-color: var(--border-med);
+}
+
+body.dark-mode .stat-card,
+body.dark-mode .card,
+body.dark-mode .summary-output,
+body.dark-mode .results-card,
+body.dark-mode .note-card,
+body.dark-mode .modal {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+body.dark-mode .sidebar {
+  background: var(--surface);
+  border-right-color: var(--border);
+}
+
+body.dark-mode .topbar {
+  background: var(--surface);
+  border-bottom-color: var(--border);
+}
+
+body.dark-mode .topbar-user {
+  background: var(--surface-2);
+}
+
+body.dark-mode .user-dropdown {
+  background: var(--surface-2);
+  border-color: var(--border-med);
+}
+
+body.dark-mode .chat-msg.ai .chat-bubble {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+body.dark-mode .quiz-option {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+body.dark-mode .quiz-trigger-section {
+  background: rgba(0,197,142,0.15);
+}
+
+body.dark-mode .upload-zone {
+  background: var(--surface-2);
+}
+
+body.dark-mode .toast {
+  background: var(--surface-3);
+  color: var(--ink);
+}
+
+body.dark-mode .toast.success {
+  background: #065f46;
+  color: white;
+}
+
+body.dark-mode .toast.error {
+  background: #991b1b;
+  color: white;
+}
+
+body.dark-mode .auth-error,
+body.dark-mode .quiz-feedback.correct,
+body.dark-mode .quiz-feedback.wrong {
+  background: var(--surface-3);
+}
+
+body.dark-mode .sidebar-item.active {
+  background: rgba(108,92,231,0.25);
+  color: var(--violet);
+}
+
+body.dark-mode .note-icon {
+  background: rgba(108,92,231,0.2);
 }
 
 @media (max-width: 1024px) {
