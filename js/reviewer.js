@@ -181,3 +181,33 @@ function clearReviewer() {
   appState.currentSummary = null;
   showToast('Cleared', '');
 }
+
+async function saveNote() {
+  if (!appState.currentSummary) {
+    showToast('No summary to save. Please summarize some text first.', 'error');
+    return;
+  }
+  
+  const note = {
+    id: uid(),
+    title: appState.currentSummary.title,
+    originalText: appState.currentSummary.text.slice(0, 3000),
+    summary: appState.currentSummary.summary,
+    keyPoints: appState.currentSummary.keyPoints,
+    createdAt: Date.now()
+  };
+  
+  appState.notes.push(note);
+  
+  // Save to Supabase (if logged in)
+  if (supabaseClient && currentUser) {
+    await saveNoteToSupabase(note);
+  } else {
+    // Fallback to localStorage
+    persistData();
+  }
+  
+  renderDashboard();
+  renderNotes();
+  showToast('Note saved! 💾', 'success');
+}

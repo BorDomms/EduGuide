@@ -1,4 +1,4 @@
-// auth.js - Authentication handling
+// auth.js - Authentication handling with Supabase
 
 let supabaseClient = null;
 let currentUser = null;
@@ -123,12 +123,136 @@ async function handleGoogleAuth() {
 function handleLogout() {
   if (supabaseClient) supabaseClient.auth.signOut();
   currentUser = null;
+  appState.notes = [];
+  appState.quizzes = [];
+  appState.proficiency = {};
   document.getElementById('app-screen').classList.add('hidden');
   document.getElementById('auth-screen').style.display = 'grid';
   showToast('Signed out successfully');
 }
 
-function enterApp(user) {
+async function loadUserDataFromSupabase() {
+  if (!supabaseClient || !currentUser) return;
+
+  try {
+    // Load notes
+    const { data: notesData, error: notesError } = await supabaseClient
+      .from('notes')
+      .select('*')
+      .eq('user_id', currentUser.id);
+    
+    if (!notesError && notesData) {
+      appState.notes = notesData;
+    }
+
+    // Load quizzes
+    const { data: quizzesData, error: quizzesError } = await supabaseClient
+      .from('quizzes')
+      .select('*')
+      .eq('user_id', currentUser.id);
+    
+    if (!quizzesError && quizzesData) {
+      appState.quizzes = quizzesData;
+    }
+
+    // Load proficiency
+    const { data: profData, error: profError } = await supabaseClient
+      .from('proficiency')
+      .select('*')
+      .eq('user_id', currentUser.id);
+    
+    if (!profError && profData) {
+      const profMap = {};
+      profData.forEach(p => { profMap[p.subject] = p.percentage; });
+      appState.proficiency = profMap;
+    }
+
+    renderDashboard();
+    renderNotes();
+    
+  } catch(e) {
+    console.error('Error loading data from Supabase:', e);
+  }
+}
+
+async function saveNoteToSupabase(note) {
+  if (!supabaseClient || !currentUser) return;
+
+  try {
+    const { error } = await supabaseClient
+      .from('notes')
+      .upsert({
+        id: note.id,
+        user_id: currentUser.id,
+        title: note.title,
+        original_text: note.originalText,
+        summary: note.summary,
+        key_points: note.keyPoints,
+        created_at: note.createdAt
+      });
+    
+    if (error) throw error;
+  } catch(e) {
+    console.error('Error saving note to Supabase:', e);
+  }
+}
+
+async function deleteNoteFromSupabase(noteId) {
+  if (!supabaseClient || !currentUser) return;
+
+  try {
+    const { error } = await supabaseClient
+      .from('notes')
+      .delete()
+      .eq('id', noteId);
+    
+    if (error) throw error;
+  } catch(e) {
+    console.error('Error deleting note from Supabase:', e);
+  }
+}
+
+async function saveQuizToSupabase(quiz) {
+  if (!supabaseClient || !currentUser) return;
+
+  try {
+    const { error } = await supabaseClient
+      .from('quizzes')
+      .insert({
+        id: quiz.id,
+        user_id: currentUser.id,
+        topic: quiz.topic,
+        score: quiz.score,
+        correct: quiz.correct,
+        total: quiz.total,
+        date_taken: quiz.date
+      });
+    
+    if (error) throw error;
+  } catch(e) {
+    console.error('Error saving quiz to Supabase:', e);
+  }
+}
+
+async function saveProficiencyToSupabase(subject, percentage) {
+  if (!supabaseClient || !currentUser) return;
+
+  try {
+    const { error } = await supabaseClient
+      .from('proficiency')
+      .upsert({
+        user_id: currentUser.id,
+        subject: subject,
+        percentage: percentage
+      }, { onConflict: 'user_id,subject' });
+    
+    if (error) throw error;
+  } catch(e) {
+    console.error('Error saving proficiency to Supabase:', e);
+  }
+}
+
+async function enterApp(user) {
   currentUser = user;
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app-screen').classList.remove('hidden');
@@ -142,8 +266,8 @@ function enterApp(user) {
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   document.getElementById('welcome-msg').textContent = `${greet}, ${name.split(' ')[0]} 👋`;
 
-  loadLocalData();
-  renderDashboard();
+  // Load data from Supabase instead of localStorage
+  await loadUserDataFromSupabase();
   loadSettingsInputs();
 
   if (!getConfig().cerebrasKey && !appState.demoMode) {

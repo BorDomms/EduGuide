@@ -293,10 +293,27 @@ function showResults() {
     circle.style.stroke = pct >= 75 ? 'var(--jade)' : pct >= 50 ? 'var(--amber)' : 'var(--rose)';
   }, 100);
 
-  appState.quizzes.push({ id: uid(), topic, score: pct, correct, total, date: Date.now() });
+  const quizEntry = { id: uid(), topic, score: pct, correct, total, date: Date.now() };
+  appState.quizzes.push(quizEntry);
+  
+  // Save to Supabase (if logged in)
+  if (supabaseClient && currentUser) {
+    saveQuizToSupabase(quizEntry);
+  } else {
+    persistData();
+  }
+  
   const prev = appState.proficiency[topic] || null;
-  appState.proficiency[topic] = prev !== null ? Math.round((prev + pct) / 2) : pct;
-  persistData();
+  const newPct = prev !== null ? Math.round((prev + pct) / 2) : pct;
+  appState.proficiency[topic] = newPct;
+  
+  // Save proficiency to Supabase
+  if (supabaseClient && currentUser) {
+    saveProficiencyToSupabase(topic, newPct);
+  } else {
+    persistData();
+  }
+  
   renderDashboard();
 }
 

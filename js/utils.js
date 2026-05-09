@@ -57,11 +57,14 @@ window.appState = {
 };
 
 window.persistData = function() {
-  localStorage.setItem('eg_data', JSON.stringify({
-    notes: window.appState.notes,
-    quizzes: window.appState.quizzes,
-    proficiency: window.appState.proficiency
-  }));
+  // Only save to localStorage if not logged into Supabase
+  if (!supabaseClient || !currentUser) {
+    localStorage.setItem('eg_data', JSON.stringify({
+      notes: window.appState.notes,
+      quizzes: window.appState.quizzes,
+      proficiency: window.appState.proficiency
+    }));
+  }
 };
 
 window.loadLocalData = function() {

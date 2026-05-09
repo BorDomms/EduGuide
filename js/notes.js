@@ -1,4 +1,4 @@
-// notes.js - Notes library
+// notes.js - Notes library with Supabase sync
 
 function renderNotes() {
   const grid = document.getElementById('notes-grid');
@@ -11,27 +11,49 @@ function renderNotes() {
       <div class="note-card-title">${escHtml(n.title)}</div>
       <div class="note-card-preview">${escHtml(n.summary || '')}</div>
       <div class="note-card-footer">
-        <span class="note-card-date">${new Date(n.createdAt).toLocaleDateString()}</span>
-        <span class="note-card-badge">${(n.keyPoints || []).length} key points</span>
+        <span class="note-card-date">${new Date(n.created_at || n.createdAt).toLocaleDateString()}</span>
+        <span class="note-card-badge">${(n.key_points || n.keyPoints || []).length} key points</span>
+      </div>
+      <div style="position: absolute; top: 12px; right: 12px;">
+        <button class="btn-outline" onclick="event.stopPropagation(); deleteNote('${n.id}')" style="padding: 4px 8px; font-size: 0.7rem; color: var(--danger); border-color: var(--danger);">🗑</button>
       </div>
     </div>
   `).join('');
 }
 
+async function deleteNote(id) {
+  if (!confirm('Are you sure you want to delete this note?')) return;
+  
+  // Remove from local state
+  appState.notes = appState.notes.filter(n => n.id !== id);
+  
+  // Remove from Supabase
+  if (supabaseClient && currentUser) {
+    await deleteNoteFromSupabase(id);
+  }
+  
+  renderNotes();
+  renderDashboard();
+  showToast('Note deleted', '');
+}
+
 function openNote(id) {
   const note = appState.notes.find(n => n.id === id);
   if (!note) return;
+  
+  const keyPoints = note.key_points || note.keyPoints || [];
+  
   appState.currentSummary = {
-    text: note.originalText || '',
+    text: note.original_text || note.originalText || '',
     summary: note.summary,
-    keyPoints: note.keyPoints,
+    keyPoints: keyPoints,
     title: note.title
   };
 
-  document.getElementById('text-input').value = note.originalText || note.summary || '';
+  document.getElementById('text-input').value = note.original_text || note.originalText || note.summary || '';
   document.getElementById('note-title-input').value = note.title;
   document.getElementById('summary-text').textContent = note.summary;
-  document.getElementById('key-points-list').innerHTML = (note.keyPoints || []).map(p =>
+  document.getElementById('key-points-list').innerHTML = keyPoints.map(p =>
     `<div class="key-point"><div class="key-point-dot"></div><span>${escHtml(p)}</span></div>`
   ).join('');
   document.getElementById('summary-section').classList.remove('hidden');
