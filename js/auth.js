@@ -150,10 +150,23 @@ async function loadUserDataFromSupabase() {
     const { data: quizzesData, error: quizzesError } = await supabaseClient
       .from('quizzes')
       .select('*')
-      .eq('user_id', currentUser.id);
-    
+      .eq('user_id', currentUser.id)
+      .order('date_taken', { ascending: false });
+
     if (!quizzesError && quizzesData) {
-      appState.quizzes = quizzesData;
+      // Convert database field names to match app
+      appState.quizzes = quizzesData.map(q => ({
+        id: q.id,
+        topic: q.topic,
+        score: q.score,
+        correct: q.correct,
+        total: q.total,
+        date: q.date_taken,  // Note: database uses date_taken, app expects date
+        date_taken: q.date_taken
+      }));
+      console.log('Loaded quizzes:', appState.quizzes.length);
+    } else if (quizzesError) {
+      console.error('Error loading quizzes:', quizzesError);
     }
 
     // Load proficiency

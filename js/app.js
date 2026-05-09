@@ -140,6 +140,7 @@ function showPage(name) {
 
   if (name === 'dashboard') renderDashboard();
   if (name === 'notes') renderNotes();
+  if (name === 'quiz' && typeof renderPastQuizzes === 'function') renderPastQuizzes(); // Add this line
 }
 
 // Settings

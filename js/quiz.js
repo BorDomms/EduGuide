@@ -29,7 +29,6 @@ async function handleGenerateQuiz() {
   try {
     await sleep(500);
     
-    // Stronger prompt with explicit instructions
     const prompt = `You MUST create EXACTLY ${requestedCount} multiple choice questions. Not ${requestedCount-1}, not ${requestedCount+1}. EXACTLY ${requestedCount}.
 
 Based on this text:
@@ -62,10 +61,6 @@ CRITICAL: You MUST generate ${requestedCount} questions. Count them before respo
     let result = await callGemini(prompt);
     console.log("Raw API response:", result);
 
-    // Parse the text format into questions
-    let questions = [];
-    let extractedQuestions = [];
-    
     // Function to parse questions from text
     function parseQuestionsFromText(text) {
       const parsed = [];
@@ -116,9 +111,9 @@ CRITICAL: You MUST generate ${requestedCount} questions. Count them before respo
       return parsed;
     }
     
-    questions = parseQuestionsFromText(result);
+    let questions = parseQuestionsFromText(result);
     
-    // If we didn't get enough questions, try a second time with a different approach
+    // If we didn't get enough questions, try a second time
     let attempts = 1;
     while (questions.length < requestedCount && attempts < 3) {
       console.log(`Only got ${questions.length} questions, requested ${requestedCount}. Attempt ${attempts + 1}...`);
@@ -146,7 +141,7 @@ And so on until question ${requestedCount}.`;
       await sleep(500);
     }
     
-    // If we still don't have enough, generate mock questions to fill the gap
+    // If we still don't have enough, fill with placeholder questions
     if (questions.length < requestedCount) {
       console.log(`Still only ${questions.length} questions. Filling with generated questions...`);
       const existingCount = questions.length;
@@ -293,11 +288,19 @@ function showResults() {
     circle.style.stroke = pct >= 75 ? 'var(--jade)' : pct >= 50 ? 'var(--amber)' : 'var(--rose)';
   }, 100);
 
-  const quizEntry = { id: uid(), topic, score: pct, correct, total, date: Date.now() };
+  const quizEntry = { 
+    id: uid(), 
+    topic: topic, 
+    score: pct, 
+    correct: correct, 
+    total: total, 
+    date: Date.now(),
+    date_taken: Date.now()
+  };
   appState.quizzes.push(quizEntry);
   
   // Save to Supabase (if logged in)
-  if (supabaseClient && currentUser) {
+  if (typeof supabaseClient !== 'undefined' && supabaseClient && typeof currentUser !== 'undefined' && currentUser) {
     saveQuizToSupabase(quizEntry);
   } else {
     persistData();
@@ -308,13 +311,14 @@ function showResults() {
   appState.proficiency[topic] = newPct;
   
   // Save proficiency to Supabase
-  if (supabaseClient && currentUser) {
+  if (typeof supabaseClient !== 'undefined' && supabaseClient && typeof currentUser !== 'undefined' && currentUser) {
     saveProficiencyToSupabase(topic, newPct);
   } else {
     persistData();
   }
   
   renderDashboard();
+  renderPastQuizzes(); // Update the past quizzes list
 }
 
 function retakeQuiz() {
@@ -323,4 +327,57 @@ function retakeQuiz() {
   document.getElementById('quiz-results').classList.add('hidden');
   document.getElementById('quiz-active').classList.remove('hidden');
   renderQuestion();
+}
+
+// Render past quizzes from Supabase/localStorage
+function renderPastQuizzes() {
+  const container = document.getElementById('past-quizzes-list');
+  if (!container) return;
+  
+  if (appState.quizzes.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="padding: 1rem; text-align: center; font-size: 0.875rem; color: var(--ink-3);">No quizzes taken yet. Generate and take a quiz to see your history!</div>';
+    return;
+  }
+  
+  // Sort by date (newest first)
+  const sortedQuizzes = [...appState.quizzes].sort((a, b) => (b.date_taken || b.date) - (a.date_taken || a.date));
+  
+  container.innerHTML = sortedQuizzes.map((quiz, idx) => `
+    <div class="past-quiz-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--surface-2); border-radius: var(--radius); border: 1px solid var(--border);">
+      <div style="flex: 1;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <span style="font-weight: 600; font-size: 0.875rem;">${escHtml(quiz.topic)}</span>
+          <span style="font-size: 0.75rem; color: var(--ink-3);">${new Date(quiz.date_taken || quiz.date).toLocaleDateString()}</span>
+        </div>
+        <div style="display: flex; gap: 16px; margin-top: 6px;">
+          <span style="font-size: 0.75rem;">Score: <strong style="color: var(--jade);">${quiz.score}%</strong></span>
+          <span style="font-size: 0.75rem;">Correct: ${quiz.correct}/${quiz.total}</span>
+        </div>
+      </div>
+      <button class="btn-outline" onclick="retakePastQuiz(${idx})" style="padding: 6px 12px; font-size: 0.75rem;">↺ Retake</button>
+    </div>
+  `).join('');
+}
+
+// Retake a past quiz
+async function retakePastQuiz(index) {
+  const sortedQuizzes = [...appState.quizzes].sort((a, b) => (b.date_taken || b.date) - (a.date_taken || a.date));
+  const quiz = sortedQuizzes[index];
+  
+  showToast('Loading quiz content...', '');
+  
+  // Find the original note that matches this topic
+  const matchingNote = appState.notes.find(n => n.title === quiz.topic || (n.summary && n.summary.includes(quiz.topic)));
+  
+  if (matchingNote) {
+    appState.currentSummary = {
+      text: matchingNote.original_text || matchingNote.originalText || '',
+      summary: matchingNote.summary,
+      keyPoints: matchingNote.key_points || matchingNote.keyPoints || [],
+      title: matchingNote.title
+    };
+    handleGenerateQuiz();
+  } else {
+    showToast('Original content not found. Generate a new quiz from the Reviewer tab.', 'error');
+  }
 }
