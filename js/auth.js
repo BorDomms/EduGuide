@@ -1,7 +1,8 @@
 // auth.js - Authentication handling with Supabase
 
-let supabaseClient = null;
-let currentUser = null;
+// Make these available globally
+window.supabaseClient = null;
+window.currentUser = null;
 
 function initSupabase() {
   const cfg = getConfig();

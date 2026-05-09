@@ -83,7 +83,6 @@ async function handleSummarize() {
   document.getElementById('summarize-btn').disabled = true;
 
   try {
-    // Add delay to prevent rate limiting
     await sleep(500);
     
     const result = await callGemini(`
@@ -108,7 +107,6 @@ ${text.slice(0, 8000)}
       const clean = result.replace(/```json?/g, '').replace(/```/g, '').trim();
       parsed = JSON.parse(clean);
     } catch(e) {
-      // Fallback if JSON parsing fails
       parsed = { 
         summary: result, 
         keyPoints: ['Review the key concepts', 'Practice with examples', 'Understand the core ideas'] 
@@ -150,7 +148,8 @@ ${text.slice(0, 8000)}
   isSummarizing = false;
 }
 
-function saveNote() {
+// SINGLE saveNote function - no duplicates
+async function saveNote() {
   if (!appState.currentSummary) {
     showToast('No summary to save. Please summarize some text first.', 'error');
     return;
@@ -167,12 +166,39 @@ function saveNote() {
   
   appState.notes.push(note);
   
-  // Save to localStorage (simpler - no Supabase dependency)
-  persistData();
+  // Check if we're logged into Supabase
+  // The variables are defined in auth.js as global
+  if (typeof supabaseClient !== 'undefined' && supabaseClient && typeof currentUser !== 'undefined' && currentUser) {
+    try {
+      console.log('Saving to Supabase...', note.id);
+      const { error } = await supabaseClient
+        .from('notes')
+        .insert({
+          id: note.id,
+          user_id: currentUser.id,
+          title: note.title,
+          original_text: note.originalText,
+          summary: note.summary,
+          key_points: note.keyPoints,
+          created_at: note.createdAt
+        });
+      
+      if (error) throw error;
+      showToast('Note saved to cloud! 💾', 'success');
+      console.log('Successfully saved to Supabase');
+    } catch(e) {
+      console.error('Supabase save error:', e);
+      persistData();
+      showToast('Note saved locally (cloud sync failed)', 'warning');
+    }
+  } else {
+    console.log('Not logged in, saving to localStorage only');
+    persistData();
+    showToast('Note saved locally! 💾', 'success');
+  }
   
   renderDashboard();
   renderNotes();
-  showToast('Note saved! 💾', 'success');
 }
 
 function clearReviewer() {
