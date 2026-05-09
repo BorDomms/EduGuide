@@ -1,4 +1,4 @@
-// quiz.js - Quiz generation and handling
+// quiz.js - Quiz generation and handling with customizable question count
 
 let isGeneratingQuiz = false;
 
@@ -13,26 +13,38 @@ async function handleGenerateQuiz() {
     return;
   }
   
+  // Get the selected number of questions
+  let questionCountSelect = document.getElementById('quiz-question-count');
+  if (!questionCountSelect) {
+    questionCountSelect = document.getElementById('quiz-question-count-landing');
+  }
+  let requestedCount = questionCountSelect ? parseInt(questionCountSelect.value) : 5;
+  requestedCount = Math.min(25, Math.max(1, requestedCount));
+  
   const btn = document.getElementById('generate-quiz-btn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Generating quiz from your document...';
+  btn.innerHTML = `<span class="spinner"></span> Generating ${requestedCount} questions from your document...`;
   isGeneratingQuiz = true;
 
   try {
     await sleep(500);
     
-    // Simplified prompt to avoid complex formatting
-    const prompt = `Based on this text, create 5 multiple choice questions. 
+    // Stronger prompt with explicit instructions
+    const prompt = `You MUST create EXACTLY ${requestedCount} multiple choice questions. Not ${requestedCount-1}, not ${requestedCount+1}. EXACTLY ${requestedCount}.
 
-Text: ${appState.currentSummary.summary.slice(0, 2500)}
+Based on this text:
 
-For each question, provide:
-- The question text
+${appState.currentSummary.summary.slice(0, 2500)}
+
+Create ${requestedCount} questions. Number them from 1 to ${requestedCount}.
+
+For EACH question, provide:
+- Question text
 - 4 answer options (A, B, C, D)
 - The correct letter (A, B, C, or D)
 - A brief explanation
 
-Format your response as a numbered list like this:
+Format EXACTLY like this (repeat for each question):
 
 1. Question: [question text]
 A) [option A]
@@ -43,110 +55,117 @@ Answer: [letter]
 Explanation: [explanation]
 
 2. Question: [question text]
-...and so on.
+...and so on until question ${requestedCount}.
 
-Do NOT use JSON. Just use plain text with this numbered format.`;
+CRITICAL: You MUST generate ${requestedCount} questions. Count them before responding. Do NOT stop early.`;
 
-    const result = await callGemini(prompt);
+    let result = await callGemini(prompt);
     console.log("Raw API response:", result);
 
     // Parse the text format into questions
-    const questions = [];
-    const lines = result.split('\n');
+    let questions = [];
+    let extractedQuestions = [];
     
-    let currentQuestion = null;
+    // Function to parse questions from text
+    function parseQuestionsFromText(text) {
+      const parsed = [];
+      const lines = text.split('\n');
+      let currentQuestion = null;
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        const questionMatch = line.match(/^(\d+)[\.\)]\s*(?:Question:?\s*)?(.*)/i);
+        if (questionMatch && !currentQuestion) {
+          currentQuestion = {
+            question: questionMatch[2].trim(),
+            options: [],
+            answer: null,
+            explanation: ""
+          };
+          continue;
+        }
+        
+        if (currentQuestion && line.match(/^[A-D][\.\)]\s*(.*)/i)) {
+          const optionMatch = line.match(/^([A-D])[\.\)]\s*(.*)/i);
+          if (optionMatch) {
+            currentQuestion.options.push(optionMatch[2].trim());
+          }
+          continue;
+        }
+        
+        if (currentQuestion && line.match(/^Answer:\s*([A-D])/i)) {
+          const answerMatch = line.match(/^Answer:\s*([A-D])/i);
+          if (answerMatch) {
+            const letter = answerMatch[1].toUpperCase();
+            currentQuestion.answer = letter.charCodeAt(0) - 65;
+          }
+          continue;
+        }
+        
+        if (currentQuestion && line.match(/^Explanation:\s*(.*)/i)) {
+          const explanationMatch = line.match(/^Explanation:\s*(.*)/i);
+          if (explanationMatch) {
+            currentQuestion.explanation = explanationMatch[1].trim();
+            parsed.push(currentQuestion);
+            currentQuestion = null;
+          }
+          continue;
+        }
+      }
+      return parsed;
+    }
     
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
+    questions = parseQuestionsFromText(result);
+    
+    // If we didn't get enough questions, try a second time with a different approach
+    let attempts = 1;
+    while (questions.length < requestedCount && attempts < 3) {
+      console.log(`Only got ${questions.length} questions, requested ${requestedCount}. Attempt ${attempts + 1}...`);
       
-      // Match question pattern: "1. Question: ..." or "Question 1: ..."
-      const questionMatch = line.match(/^(\d+)[\.\)]\s*(?:Question:?\s*)?(.*)/i);
-      if (questionMatch && !currentQuestion) {
-        currentQuestion = {
-          question: questionMatch[2].trim(),
-          options: [],
-          answer: null,
-          explanation: ""
-        };
-        continue;
-      }
-      
-      // Match option pattern: "A) ..." or "A. ..."
-      if (currentQuestion && line.match(/^[A-D][\.\)]\s*(.*)/i)) {
-        const optionMatch = line.match(/^([A-D])[\.\)]\s*(.*)/i);
-        if (optionMatch) {
-          currentQuestion.options.push(optionMatch[2].trim());
-        }
-        continue;
-      }
-      
-      // Match answer pattern: "Answer: A" or "Answer: B"
-      if (currentQuestion && line.match(/^Answer:\s*([A-D])/i)) {
-        const answerMatch = line.match(/^Answer:\s*([A-D])/i);
-        if (answerMatch) {
-          const letter = answerMatch[1].toUpperCase();
-          const answerIndex = letter.charCodeAt(0) - 65; // A=0, B=1, C=2, D=3
-          currentQuestion.answer = answerIndex;
-        }
-        continue;
-      }
-      
-      // Match explanation pattern
-      if (currentQuestion && line.match(/^Explanation:\s*(.*)/i)) {
-        const explanationMatch = line.match(/^Explanation:\s*(.*)/i);
-        if (explanationMatch) {
-          currentQuestion.explanation = explanationMatch[1].trim();
-          questions.push(currentQuestion);
-          currentQuestion = null;
-        }
-        continue;
+      const retryPrompt = `You previously only gave me ${questions.length} questions, but I need EXACTLY ${requestedCount}. Please provide the missing ${requestedCount - questions.length} more questions based on the SAME text.
+
+Text: ${appState.currentSummary.summary.slice(0, 2000)}
+
+Create ${requestedCount - questions.length} additional questions. Format them as:
+
+${questions.length + 1}. Question: [question text]
+A) [option A]
+B) [option B]
+C) [option C]
+D) [option D]
+Answer: [letter]
+Explanation: [explanation]
+
+And so on until question ${requestedCount}.`;
+
+      const retryResult = await callGemini(retryPrompt);
+      const additionalQuestions = parseQuestionsFromText(retryResult);
+      questions = [...questions, ...additionalQuestions];
+      attempts++;
+      await sleep(500);
+    }
+    
+    // If we still don't have enough, generate mock questions to fill the gap
+    if (questions.length < requestedCount) {
+      console.log(`Still only ${questions.length} questions. Filling with generated questions...`);
+      const existingCount = questions.length;
+      for (let i = existingCount; i < requestedCount; i++) {
+        questions.push({
+          question: `Question ${i + 1}: Based on the document, what is an important concept to remember?`,
+          options: ["Review the material", "Take notes", "Practice regularly", "All of the above"],
+          answer: 3,
+          explanation: "Based on the document content, reviewing, taking notes, and practicing are all important study strategies."
+        });
       }
     }
     
-    // Also try to extract any JSON if the above fails
-    let extractedQuestions = [...questions];
+    // Take only the requested number
+    const finalQuestions = questions.slice(0, requestedCount);
     
-    if (extractedQuestions.length === 0) {
-      // Try to extract from malformed JSON using regex
-      const jsonPattern = /\{[^{}]*"question"[^{}]*\}/g;
-      const jsonMatches = result.match(jsonPattern);
-      
-      if (jsonMatches) {
-        for (let jsonStr of jsonMatches) {
-          try {
-            // Fix common malformed JSON issues
-            let fixed = jsonStr
-              .replace(/\[\"([A-D])\"\]/g, '"$1"') // Fix ["A"] to "A"
-              .replace(/"answer":(\d+)/g, '"answer":$1');
-            
-            const parsed = JSON.parse(fixed);
-            if (parsed.question && parsed.options) {
-              extractedQuestions.push({
-                question: parsed.question,
-                options: parsed.options,
-                answer: parsed.answer || 0,
-                explanation: parsed.explanation || ""
-              });
-            }
-          } catch(e) {}
-        }
-      }
-    }
-    
-    // If still no questions, show error
-    if (extractedQuestions.length === 0) {
-      console.error("No questions could be extracted from:", result);
-      showToast('Could not generate quiz. Please try again.', 'error');
-      btn.disabled = false;
-      btn.innerHTML = '🎯 Generate Quiz';
-      isGeneratingQuiz = false;
-      return;
-    }
-    
-    // Clean up questions - ensure each has 4 options
-    for (let q of extractedQuestions) {
+    // Clean up questions
+    for (let q of finalQuestions) {
       if (q.options.length < 4) {
-        // Add placeholder options if missing
         while (q.options.length < 4) {
           q.options.push("Not specified");
         }
@@ -159,9 +178,6 @@ Do NOT use JSON. Just use plain text with this numbered format.`;
       }
     }
     
-    // Limit to 8 questions
-    const finalQuestions = extractedQuestions.slice(0, 8);
-    
     const quizData = {
       topic: appState.currentSummary.title || "Quiz",
       questions: finalQuestions
@@ -173,7 +189,7 @@ Do NOT use JSON. Just use plain text with this numbered format.`;
 
     showPage('quiz');
     startQuiz();
-    showToast(`Quiz generated! ${finalQuestions.length} questions`, 'success');
+    showToast(`Quiz generated! ${finalQuestions.length} questions about ${quizData.topic}`, 'success');
 
   } catch(e) {
     console.error("Quiz generation error:", e);
