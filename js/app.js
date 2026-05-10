@@ -140,7 +140,9 @@ function showPage(name) {
 
   if (name === 'dashboard') renderDashboard();
   if (name === 'notes') renderNotes();
-  if (name === 'quiz' && typeof renderPastQuizzes === 'function') renderPastQuizzes();
+  if (name === 'quiz') {
+    if (typeof renderPastQuizzes === 'function') renderPastQuizzes();
+  }
 
   // Show/hide floating AI Tutor FAB
   const fab = document.getElementById('tutor-fab');
@@ -195,6 +197,10 @@ function clearAllData() {
   renderDashboard();
   renderNotes();
   showToast('Data cleared', '');
+}
+
+function toggleDropdown() {
+  document.getElementById('user-dropdown').classList.toggle('hidden');
 }
 
 function toggleTutorPanel() {
@@ -278,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('save-config-btn')?.addEventListener('click', saveConfig);
   document.getElementById('skip-config-btn')?.addEventListener('click', skipConfig);
   document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
+  document.getElementById('logout-btn-sidebar')?.addEventListener('click', handleLogout);
   document.getElementById('save-settings-btn')?.addEventListener('click', saveSettingsConfig);
   document.getElementById('export-data-btn')?.addEventListener('click', exportData);
   document.getElementById('clear-data-btn')?.addEventListener('click', clearAllData);
@@ -296,6 +303,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('[data-page]').forEach(btn => {
     btn.addEventListener('click', () => showPage(btn.getAttribute('data-page')));
+  });
+
+  document.getElementById('user-btn')?.addEventListener('click', toggleDropdown);
+  
+  document.addEventListener('click', e => {
+    const btn = document.getElementById('user-btn');
+    if (btn && !btn.contains(e.target)) {
+      const dropdown = document.getElementById('user-dropdown');
+      if (dropdown) dropdown.classList.add('hidden');
+    }
   });
 
   document.getElementById('new-note-text')?.addEventListener('input', function() {

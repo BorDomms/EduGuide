@@ -154,6 +154,16 @@
         <span class="toggle-icon">☀️</span>
         <span class="toggle-icon">🌙</span>
       </div>
+      <!-- User Dropdown -->
+      <div class="topbar-user" id="user-btn">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <span id="user-name-display">User</span>
+        <span style="font-size: 12px; color: var(--ink-3);">▾</span>
+        <div id="user-dropdown" class="user-dropdown hidden">
+          <button class="user-dropdown-item" data-page="settings">⚙️ Settings</button>
+          <button class="user-dropdown-item danger" id="logout-btn">← Sign out</button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -183,13 +193,13 @@
     <div class="sidebar-label">Account</div>
     <!-- User Profile Card -->
     <div class="sidebar-profile">
-      <div class="user-avatar sidebar-avatar" id="user-avatar">?</div>
+      <div class="user-avatar sidebar-avatar" id="user-avatar-sidebar">?</div>
       <div class="sidebar-profile-info">
-        <div class="sidebar-profile-name" id="user-name-display">User</div>
-        <div class="sidebar-profile-email" id="user-email-display"></div>
+        <div class="sidebar-profile-name" id="user-name-sidebar">User</div>
+        <div class="sidebar-profile-email" id="user-email-sidebar"></div>
       </div>
     </div>
-    <button class="sidebar-item sidebar-item-danger" id="logout-btn" style="color:var(--danger);">
+    <button class="sidebar-item sidebar-item-danger" id="logout-btn-sidebar" style="color:var(--danger);">
       <div class="sidebar-icon" style="background:var(--rose-soft);">🚪</div> Sign Out
     </button>
   </nav>
@@ -279,8 +289,6 @@
         </div>
       </div>
 
-      </div><!-- end reviewer-layout -->
-
       <!-- Summary Output -->
       <div id="summary-section" class="hidden" style="margin-top: 2rem;">
         <div class="summary-output">
@@ -338,7 +346,6 @@
           <div class="shimmer" style="height: 16px; width: 60%;"></div>
         </div>
       </div>
-
     </div><!-- end page-reviewer -->
 
     <!-- Quiz Page -->
@@ -468,7 +475,7 @@
     </div>
 
     <!-- AI Tutor is now a floating panel, not a page; placeholder kept for showPage compatibility -->
-    <div id="page-chat" class="page" style="display:none !important;"></div>
+    <div id="page-chat" class="page" style="display:none !important;"><div style="display:none;"></div></div>
 
     <!-- Settings Page -->
     <div id="page-settings" class="page">
