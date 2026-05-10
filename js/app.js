@@ -195,17 +195,31 @@ function initDarkMode() {
   
   // Check for saved preference
   const savedMode = localStorage.getItem('eg_dark_mode');
-  if (savedMode === 'enabled') {
+  
+  // Only apply dark mode if we're NOT on the auth screen
+  const authScreen = document.getElementById('auth-screen');
+  const isAuthScreenVisible = authScreen && authScreen.style.display !== 'none';
+  
+  if (savedMode === 'enabled' && !isAuthScreenVisible) {
     document.body.classList.add('dark-mode');
+  } else {
+    document.body.classList.remove('dark-mode');
   }
   
   darkModeToggle.addEventListener('click', function() {
-    document.body.classList.toggle('dark-mode');
+    // Check if we're currently on auth screen
+    const authScreenNow = document.getElementById('auth-screen');
+    const isAuthVisible = authScreenNow && authScreenNow.style.display !== 'none';
     
-    if (document.body.classList.contains('dark-mode')) {
-      localStorage.setItem('eg_dark_mode', 'enabled');
-    } else {
-      localStorage.setItem('eg_dark_mode', 'disabled');
+    // Only toggle if we're in the app, not on auth screen
+    if (!isAuthVisible) {
+      document.body.classList.toggle('dark-mode');
+      
+      if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('eg_dark_mode', 'enabled');
+      } else {
+        localStorage.setItem('eg_dark_mode', 'disabled');
+      }
     }
   });
 }

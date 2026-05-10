@@ -1502,3 +1502,54 @@ body.dark-mode .note-icon {
   .sidebar { display: none; }
   .main-content { padding: 1.25rem; }
 }
+
+/* ── FORCE LIGHT MODE ON AUTH SCREEN ── */
+#auth-screen,
+#auth-screen * {
+  --ink: #0f0e17 !important;
+  --ink-2: #2d2b3d !important;
+  --ink-3: #6e6d80 !important;
+  --ink-4: #a8a7b8 !important;
+  --surface: #faf9ff !important;
+  --surface-2: #f1f0f9 !important;
+  --surface-3: #e8e6f4 !important;
+  --border: rgba(100, 95, 140, 0.12) !important;
+  --border-med: rgba(100, 95, 140, 0.22) !important;
+}
+
+/* Force auth panel backgrounds */
+#auth-screen .auth-panel-left {
+  background: linear-gradient(145deg, #1a1040 0%, #2d1f60 50%, #1a1040 100%) !important;
+}
+
+#auth-screen .auth-panel-right {
+  background: var(--surface) !important;
+}
+
+/* Force auth tab styles */
+#auth-screen .auth-tab.active {
+  background: var(--violet-soft) !important;
+  color: var(--violet) !important;
+}
+
+/* Force input fields on auth screen */
+#auth-screen .field input,
+#auth-screen .field textarea {
+  background: var(--surface-2) !important;
+  color: var(--ink) !important;
+  border-color: var(--border) !important;
+}
+
+/* Override any dark mode that might try to apply to auth screen */
+body.dark-mode #auth-screen,
+body.dark-mode #auth-screen * {
+  --ink: #0f0e17 !important;
+  --ink-2: #2d2b3d !important;
+  --ink-3: #6e6d80 !important;
+  --ink-4: #a8a7b8 !important;
+  --surface: #faf9ff !important;
+  --surface-2: #f1f0f9 !important;
+  --surface-3: #e8e6f4 !important;
+  --border: rgba(100, 95, 140, 0.12) !important;
+  --border-med: rgba(100, 95, 140, 0.22) !important;
+}

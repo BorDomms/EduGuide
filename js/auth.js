@@ -217,6 +217,14 @@ async function enterApp(user) {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app-screen').classList.remove('hidden');
 
+  // 👇 ADD THIS - Restore dark mode preference after login
+  const savedMode = localStorage.getItem('eg_dark_mode');
+  if (savedMode === 'enabled') {
+    document.body.classList.add('dark-mode');
+  } else {
+    document.body.classList.remove('dark-mode');
+  }
+
   const name     = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Student';
   const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
@@ -360,6 +368,10 @@ function handleLogout() {
   // Show auth screen
   document.getElementById('app-screen').classList.add('hidden');
   document.getElementById('auth-screen').style.display = 'grid';
+  
+  // 👇 ADD THIS - Force remove dark mode when on auth screen
+  document.body.classList.remove('dark-mode');
+  
   showToast('Signed out successfully');
 }
 
