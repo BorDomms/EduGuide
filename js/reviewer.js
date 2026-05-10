@@ -11,6 +11,7 @@ function handleFileUpload(e) {
   if (!file) return;
   
   const fileType = file.name.split('.').pop().toLowerCase();
+  const fileName = file.name.replace(/\.[^.]+$/, ''); // Get filename without extension
   
   if (fileType === 'pdf') {
     // Handle PDF properly with PDF.js
@@ -36,9 +37,8 @@ function handleFileUpload(e) {
         }
         
         document.getElementById('text-input').value = fullText.slice(0, 15000);
-        if (!document.getElementById('note-title-input').value) {
-          document.getElementById('note-title-input').value = file.name.replace('.pdf', '');
-        }
+        // 👇 Auto-fill the note title with the file name (without extension)
+        document.getElementById('note-title-input').value = fileName;
         showToast(`📄 PDF loaded: ${Math.min(fullText.length, 15000)} characters extracted`);
       } catch(error) {
         console.error('PDF parsing error:', error);
@@ -52,9 +52,8 @@ function handleFileUpload(e) {
     reader.onload = ev => {
       uploadedFileContent = ev.target.result;
       document.getElementById('text-input').value = uploadedFileContent.slice(0, 15000);
-      if (!document.getElementById('note-title-input').value) {
-        document.getElementById('note-title-input').value = file.name.replace(/\.[^.]+$/, '');
-      }
+      // 👇 Auto-fill the note title with the file name (without extension)
+      document.getElementById('note-title-input').value = fileName;
       showToast(`📄 "${file.name}" loaded`);
     };
     reader.readAsText(file);
