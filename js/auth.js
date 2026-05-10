@@ -360,17 +360,70 @@ async function saveProficiencyToSupabase(subject, percentage) {
 function handleLogout() {
   if (supabaseClient) supabaseClient.auth.signOut();
   currentUser = null;
+  
   // Clear in-memory state
   appState.notes       = [];
   appState.quizzes     = [];
   appState.proficiency = {};
   appState.currentSummary = null;
+  
   // Show auth screen
   document.getElementById('app-screen').classList.add('hidden');
   document.getElementById('auth-screen').style.display = 'grid';
   
-  // 👇 ADD THIS - Force remove dark mode when on auth screen
+  // Force remove dark mode when on auth screen
   document.body.classList.remove('dark-mode');
+  
+  // RESET ALL AUTH BUTTONS AND FORMS
+  // Reset login button
+  const loginBtn = document.getElementById('login-btn');
+  if (loginBtn) {
+    loginBtn.disabled = false;
+    loginBtn.innerHTML = 'Sign in';
+  }
+  
+  // Reset signup button
+  const signupBtn = document.getElementById('signup-btn');
+  if (signupBtn) {
+    signupBtn.disabled = false;
+    signupBtn.innerHTML = 'Create account';
+  }
+  
+  // Clear any error messages
+  const loginError = document.getElementById('login-error');
+  if (loginError) loginError.classList.add('hidden');
+  
+  const signupError = document.getElementById('signup-error');
+  if (signupError) signupError.classList.add('hidden');
+  
+  // Clear input fields for better UX
+  const loginEmail = document.getElementById('login-email');
+  const loginPassword = document.getElementById('login-password');
+  const signupName = document.getElementById('signup-name');
+  const signupEmail = document.getElementById('signup-email');
+  const signupPassword = document.getElementById('signup-password');
+  
+  if (loginEmail) loginEmail.value = '';
+  if (loginPassword) loginPassword.value = '';
+  if (signupName) signupName.value = '';
+  if (signupEmail) signupEmail.value = '';
+  if (signupPassword) signupPassword.value = '';
+  
+  // Reset password field types back to password
+  if (loginPassword) loginPassword.type = 'password';
+  if (signupPassword) signupPassword.type = 'password';
+  
+  // Reset password toggle icons
+  const toggleButtons = document.querySelectorAll('.toggle-password');
+  toggleButtons.forEach(button => {
+    const eyeIcon = button.querySelector('.toggle-icon-eye');
+    const eyeOffIcon = button.querySelector('.toggle-icon-eye-off');
+    if (eyeIcon) eyeIcon.style.display = 'inline-block';
+    if (eyeOffIcon) eyeOffIcon.style.display = 'none';
+  });
+  
+  // Make sure we're on the login tab
+  switchAuth('login');
   
   showToast('Signed out successfully');
 }
