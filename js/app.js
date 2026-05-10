@@ -291,4 +291,49 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   initDarkMode();
+
+  // Password visibility toggle - direct implementation
+  const toggleButtons = document.querySelectorAll('.toggle-password');
+  console.log('Found toggle buttons:', toggleButtons.length);
+
+  toggleButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const targetId = this.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+      const eyeIcon = this.querySelector('.toggle-icon-eye');
+      const eyeOffIcon = this.querySelector('.toggle-icon-eye-off');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        if (eyeIcon) eyeIcon.style.display = 'none';
+        if (eyeOffIcon) eyeOffIcon.style.display = 'inline-block';
+      } else {
+        input.type = 'password';
+        if (eyeIcon) eyeIcon.style.display = 'inline-block';
+        if (eyeOffIcon) eyeOffIcon.style.display = 'none';
+      }
+    });
+  });
+
+  // Enter key submit
+  const loginPassword = document.getElementById('login-password');
+  const signupPassword = document.getElementById('signup-password');
+
+  if (loginPassword) {
+    loginPassword.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('login-btn').click();
+      }
+    });
+  }
+
+  if (signupPassword) {
+    signupPassword.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('signup-btn').click();
+      }
+    });
+  }
 });

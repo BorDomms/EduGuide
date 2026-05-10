@@ -50,7 +50,13 @@
         </div>
         <div class="field">
           <label>Password</label>
-          <input type="password" id="login-password" placeholder="••••••••" />
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="password" id="login-password" placeholder="••••••••" style="flex: 1;" />
+            <button type="button" class="toggle-password" data-target="login-password" style="background: var(--surface-2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+              <span class="toggle-icon-eye">👁️</span>
+              <span class="toggle-icon-eye-off" style="display: none;">🙈</span>
+            </button>
+          </div>
         </div>
         <button class="btn-primary" id="login-btn">Sign in</button>
         <div class="divider">or continue with</div>
@@ -80,7 +86,13 @@
         </div>
         <div class="field">
           <label>Password</label>
-          <input type="password" id="signup-password" placeholder="Min. 8 characters" />
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="password" id="signup-password" placeholder="Min. 8 characters" style="flex: 1;" />
+            <button type="button" class="toggle-password" data-target="signup-password" style="background: var(--surface-2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+              <span class="toggle-icon-eye">👁️</span>
+              <span class="toggle-icon-eye-off" style="display: none;">🙈</span>
+            </button>
+          </div>
         </div>
         <button class="btn-primary" id="signup-btn">Create account</button>
         <div class="divider">or continue with</div>

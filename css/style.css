@@ -278,6 +278,23 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 1rem;
 }
 
+/* Password Toggle Button Styles */
+.toggle-password {
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.toggle-password:hover {
+  background: var(--surface-3) !important;
+  border-color: var(--violet) !important;
+}
+
+.toggle-password .toggle-icon-eye,
+.toggle-password .toggle-icon-eye-off {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
 /* MAIN APP LAYOUT */
 #app-screen {
   display: grid;
