@@ -52,8 +52,7 @@ window.appState = {
   currentQuizData: null,
   currentQuizIndex: 0,
   currentQuizAnswers: [],
-  chatHistory: [],
-  demoMode: false
+  chatHistory: []
 };
 
 window.persistData = function() {
