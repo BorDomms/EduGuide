@@ -1184,15 +1184,17 @@ a { color: inherit; text-decoration: none; }
   background: var(--surface-2);
   border: 1.5px solid var(--border-med);
   border-radius: 40px;
-  padding: 8px;
-  width: 64px;
+  width: 72px;
   height: 36px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 8px;
   cursor: pointer;
   transition: var(--transition);
   position: relative;
+  overflow: hidden;
+  margin-top: 2px;  /* Moves the whole toggle down by 2px */
 }
 
 .dark-mode-toggle:hover {
@@ -1200,15 +1202,14 @@ a { color: inherit; text-decoration: none; }
 }
 
 .toggle-icon {
-  font-size: 18px;
-  width: 32px;
-  height: 32px;
+  font-size: 15px;
+  width: 28px;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: var(--transition);
   z-index: 1;
+  line-height: 1;
 }
 
 .dark-mode-toggle::before {
@@ -1219,12 +1220,13 @@ a { color: inherit; text-decoration: none; }
   border-radius: 50%;
   background: var(--violet);
   transition: transform 0.3s ease;
-  left: 4px;
-  top: 2px;
+  left: 3px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 body.dark-mode .dark-mode-toggle::before {
-  transform: translateX(26px);
+  transform: translateX(36px) translateY(-50%);
   background: var(--jade);
 }
 
@@ -1234,7 +1236,6 @@ body.dark-mode .dark-mode-toggle {
 }
 
 /* ── DARK MODE QUIZ STYLES ───────────────────────────── */
-
 /* Quiz question card background in dark mode */
 body.dark-mode .quiz-question-card {
   background: var(--surface-2);
@@ -1552,4 +1553,163 @@ body.dark-mode #auth-screen * {
   --surface-3: #e8e6f4 !important;
   --border: rgba(100, 95, 140, 0.12) !important;
   --border-med: rgba(100, 95, 140, 0.22) !important;
+}
+/* ── REVIEWER LAYOUT (2/3 + 1/3) ───────────────────── */
+.reviewer-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+.reviewer-left { display: flex; flex-direction: column; }
+.reviewer-textarea {
+  flex: 1;
+  min-height: calc(100vh - 340px);
+  max-height: calc(100vh - 280px);
+  resize: vertical;
+}
+.reviewer-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: sticky;
+  top: 0;
+}
+.upload-zone-compact {
+  padding: 1.5rem 1rem !important;
+}
+.upload-zone-compact h3 { margin-bottom: 4px; }
+
+/* ── NEW NOTE MODAL ─────────────────────────────────── */
+.new-note-modal-inner {
+  animation: slideUp 0.25s ease;
+}
+
+/* ── SIDEBAR PROFILE ────────────────────────────────── */
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  margin-bottom: 4px;
+}
+.sidebar-avatar {
+  width: 36px !important;
+  height: 36px !important;
+  font-size: 0.8125rem !important;
+  flex-shrink: 0;
+}
+.sidebar-profile-info { overflow: hidden; }
+.sidebar-profile-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-profile-email {
+  font-size: 0.72rem;
+  color: var(--ink-4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── FLOATING AI TUTOR ──────────────────────────────── */
+.tutor-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--violet);
+  color: #fff;
+  border-radius: 99px;
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 24px rgba(108,92,231,0.4);
+  z-index: 500;
+  transition: var(--transition);
+  border: none;
+  cursor: pointer;
+}
+.tutor-fab:hover { background: var(--violet-dim); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(108,92,231,0.5); }
+
+.tutor-panel {
+  position: fixed;
+  bottom: 90px;
+  right: 28px;
+  width: 380px;
+  max-height: calc(100vh - 120px);
+  background: var(--surface);
+  border: 1px solid var(--border-med);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  z-index: 499;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.25s ease;
+}
+.tutor-panel.hidden { display: none !important; }
+.tutor-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  flex-shrink: 0;
+}
+.tutor-suggestions {
+  padding: 10px 12px 0;
+  gap: 6px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.tutor-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 12px;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
+}
+.tutor-input-row {
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* dark mode tweaks for new elements */
+body.dark-mode .tutor-panel {
+  background: var(--surface-2);
+  border-color: var(--border-med);
+}
+body.dark-mode .tutor-panel-header {
+  background: var(--surface-3);
+}
+body.dark-mode .sidebar-profile {
+  background: var(--surface-2);
+}
+body.dark-mode #new-note-text {
+  background: var(--surface-2);
+  color: var(--ink);
+  border-color: var(--border-med);
+}
+
+@media (max-width: 1024px) {
+  .reviewer-layout { grid-template-columns: 1fr; }
+  .reviewer-textarea { min-height: 200px; max-height: 360px; }
+  .reviewer-right { position: static; }
+}
+@media (max-width: 600px) {
+  .tutor-panel { width: calc(100vw - 32px); right: 16px; }
+  .tutor-fab { bottom: 16px; right: 16px; }
 }

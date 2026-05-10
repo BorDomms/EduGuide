@@ -154,16 +154,6 @@
         <span class="toggle-icon">☀️</span>
         <span class="toggle-icon">🌙</span>
       </div>
-      <!-- User Dropdown -->
-      <div class="topbar-user" id="user-btn">
-        <div class="user-avatar" id="user-avatar">?</div>
-        <span id="user-name-display">User</span>
-        <span style="font-size: 12px; color: var(--ink-3);">▾</span>
-        <div id="user-dropdown" class="user-dropdown hidden">
-          <button class="user-dropdown-item" data-page="settings">⚙️ Settings</button>
-          <button class="user-dropdown-item danger" id="logout-btn">← Sign out</button>
-        </div>
-      </div>
     </div>
   </header>
 
@@ -184,15 +174,23 @@
     </button>
 
     <div class="sidebar-label" style="margin-top: 8px;">Assistant</div>
-    <button class="sidebar-item" data-page="chat">
-      <div class="sidebar-icon">💬</div> AI Tutor
-    </button>
+    <div style="padding: 8px 12px; font-size: 0.8rem; color: var(--ink-4); line-height: 1.5;">
+      💬 Open the AI Tutor from the <strong style="color:var(--ink-3);">Reviewer</strong> or <strong style="color:var(--ink-3);">Notes</strong> tab.
+    </div>
 
     <div style="flex: 1;"></div>
 
     <div class="sidebar-label">Account</div>
-    <button class="sidebar-item" data-page="settings">
-      <div class="sidebar-icon">⚙️</div> Settings
+    <!-- User Profile Card -->
+    <div class="sidebar-profile">
+      <div class="user-avatar sidebar-avatar" id="user-avatar">?</div>
+      <div class="sidebar-profile-info">
+        <div class="sidebar-profile-name" id="user-name-display">User</div>
+        <div class="sidebar-profile-email" id="user-email-display"></div>
+      </div>
+    </div>
+    <button class="sidebar-item sidebar-item-danger" id="logout-btn" style="color:var(--danger);">
+      <div class="sidebar-icon" style="background:var(--rose-soft);">🚪</div> Sign Out
     </button>
   </nav>
 
@@ -246,35 +244,42 @@
     <div id="page-reviewer" class="page">
       <div class="page-header">
         <h1>📄 Reviewer</h1>
-        <p>Upload a document or paste text — AI will summarize it with key points.</p>
+        <p>Paste your notes or upload a document — AI will summarize it with key points.</p>
       </div>
 
-      <div class="upload-zone" id="upload-zone">
-        <input type="file" id="file-input" accept=".pdf,.txt,.docx,.md" />
-        <div class="upload-icon">📤</div>
-        <h3>Drop your document here</h3>
-        <p>or click to browse files</p>
-        <div class="file-types">
-          <span class="file-badge">.PDF</span>
-          <span class="file-badge">.TXT</span>
-          <span class="file-badge">.DOCX</span>
-          <span class="file-badge">.MD</span>
+      <div class="reviewer-layout">
+        <!-- Left: 2/3 — Text input -->
+        <div class="reviewer-left">
+          <textarea class="text-input-area reviewer-textarea" id="text-input" placeholder="Paste your notes, lecture content, or any text you want to study…"></textarea>
+          <div class="btn-row" style="margin-top: 0.75rem;">
+            <button class="btn-outline" id="clear-reviewer-btn">Clear</button>
+          </div>
+        </div>
+
+        <!-- Right: 1/3 — Title + Upload + Summarize -->
+        <div class="reviewer-right">
+          <div class="field">
+            <label>Note Title (optional)</label>
+            <input type="text" id="note-title-input" placeholder="e.g. Chapter 3 — Cell Biology" />
+          </div>
+
+          <div class="upload-zone upload-zone-compact" id="upload-zone">
+            <input type="file" id="file-input" accept=".pdf,.txt,.docx,.md" />
+            <div class="upload-icon" style="width:44px;height:44px;font-size:20px;margin-bottom:0.6rem;">📤</div>
+            <h3 style="font-size:0.95rem;">Drop your document here</h3>
+            <p style="font-size:0.8rem;">or click to browse</p>
+            <div class="file-types" style="margin-top:0.75rem;">
+              <span class="file-badge">.PDF</span>
+              <span class="file-badge">.TXT</span>
+              <span class="file-badge">.MD</span>
+            </div>
+          </div>
+
+          <button class="btn-jade" id="summarize-btn" style="width:100%;margin-top:0.75rem;"><span>✨</span> Summarize with AI</button>
         </div>
       </div>
 
-      <div class="or-divider">or paste text directly</div>
-
-      <textarea class="text-input-area" id="text-input" placeholder="Paste your notes, lecture content, or any text you want to study…"></textarea>
-
-      <div class="field" style="margin-top: 1rem;">
-        <label>Note Title (optional)</label>
-        <input type="text" id="note-title-input" placeholder="e.g. Chapter 3 — Cell Biology" />
-      </div>
-
-      <div class="btn-row">
-        <button class="btn-jade" id="summarize-btn"><span>✨</span> Summarize with AI</button>
-        <button class="btn-outline" id="clear-reviewer-btn">Clear</button>
-      </div>
+      </div><!-- end reviewer-layout -->
 
       <!-- Summary Output -->
       <div id="summary-section" class="hidden" style="margin-top: 2rem;">
@@ -333,7 +338,8 @@
           <div class="shimmer" style="height: 16px; width: 60%;"></div>
         </div>
       </div>
-    </div>
+
+    </div><!-- end page-reviewer -->
 
     <!-- Quiz Page -->
     <div id="page-quiz" class="page">
@@ -435,38 +441,34 @@
           <h1>📚 My Notes</h1>
           <p>Your saved summaries and documents.</p>
         </div>
-        <button class="btn-jade" data-page="reviewer" style="padding: 10px 18px; font-size: 0.875rem;">+ New Note</button>
+        <button class="btn-jade" onclick="openNewNoteModal()" style="padding: 10px 18px; font-size: 0.875rem;">+ New Note</button>
       </div>
       <div class="notes-grid" id="notes-grid"></div>
     </div>
 
-    <!-- AI Tutor Chat Page -->
-    <div id="page-chat" class="page">
-      <div class="page-header">
-        <h1>💬 AI Tutor</h1>
-        <p>Ask questions about anything you're studying. Powered by Cerebras AI.</p>
-      </div>
-      <div class="chat-wrap">
-        <div class="chat-suggestions" id="chat-suggestions">
-          <button class="chat-suggestion" data-suggestion="Explain the concept of mitosis in simple terms">🔬 Explain mitosis</button>
-          <button class="chat-suggestion" data-suggestion="What are the key differences between DNA and RNA?">🧬 DNA vs RNA</button>
-          <button class="chat-suggestion" data-suggestion="Help me understand photosynthesis step by step">🌿 Photosynthesis</button>
-          <button class="chat-suggestion" data-suggestion="Can you quiz me on the French Revolution?">🏛️ French Revolution quiz</button>
-        </div>
-        <div class="chat-messages" id="chat-messages">
-          <div class="chat-msg ai">
-            <div class="chat-avatar ai">🧠</div>
-            <div class="chat-bubble">
-              Hey! I'm your AI study tutor. Ask me anything about your subjects — I can explain concepts, help you understand difficult material, quiz you, or discuss your notes. What are we studying today?
-            </div>
+    <!-- New Note Modal -->
+    <div id="new-note-modal" class="modal-backdrop hidden" onclick="if(event.target===this)closeNewNoteModal()">
+      <div class="modal new-note-modal-inner" style="max-width:760px;width:100%;padding:0;overflow:hidden;">
+        <div style="padding:1.5rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);">
+          <div style="display:flex;align-items:center;gap:12px;flex:1;">
+            <span style="font-size:1.3rem;">📝</span>
+            <input type="text" id="new-note-title" placeholder="Note title…" style="font-size:1.1rem;font-weight:600;background:transparent;border:none;color:var(--ink);width:100%;font-family:var(--font);" />
           </div>
+          <button onclick="closeNewNoteModal()" style="width:32px;height:32px;border-radius:50%;background:var(--surface-3);color:var(--ink-3);font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:12px;">✕</button>
         </div>
-        <div class="chat-input-row">
-          <textarea class="chat-input" id="chat-input" placeholder="Ask anything…" rows="1"></textarea>
-          <button class="btn-send" id="chat-send-btn">➤</button>
+        <div style="padding:1.5rem 2rem;">
+          <textarea id="new-note-text" placeholder="Paste your notes, lecture content, or anything you want to study…" style="width:100%;min-height:320px;padding:14px 16px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius-lg);font-size:0.9375rem;color:var(--ink);resize:vertical;line-height:1.7;font-family:var(--font);transition:var(--transition);" onfocus="this.style.borderColor='var(--violet)';this.style.boxShadow='0 0 0 3px var(--violet-soft)'" onblur="this.style.borderColor='';this.style.boxShadow=''"></textarea>
+        </div>
+        <div style="padding:1rem 2rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;align-items:center;">
+          <span id="new-note-char-count" style="font-size:0.8rem;color:var(--ink-4);margin-right:auto;"></span>
+          <button class="btn-outline" onclick="closeNewNoteModal()">Cancel</button>
+          <button class="btn-jade" onclick="summarizeFromNoteModal()" style="flex:unset;padding:11px 22px;">✨ Summarize with AI</button>
         </div>
       </div>
     </div>
+
+    <!-- AI Tutor is now a floating panel, not a page; placeholder kept for showPage compatibility -->
+    <div id="page-chat" class="page" style="display:none !important;"></div>
 
     <!-- Settings Page -->
     <div id="page-settings" class="page">
@@ -504,6 +506,38 @@
     </div>
 
   </main>
+</div>
+
+<!-- Floating AI Tutor (visible on reviewer & notes pages only) -->
+<button id="tutor-fab" class="tutor-fab hidden" onclick="toggleTutorPanel()" title="AI Tutor">
+  <span id="tutor-fab-icon">🧠</span>
+  <span id="tutor-fab-label">AI Tutor</span>
+</button>
+
+<div id="tutor-panel" class="tutor-panel hidden">
+  <div class="tutor-panel-header">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:1.2rem;">🧠</span>
+      <span style="font-weight:700;font-size:0.95rem;">AI Tutor</span>
+    </div>
+    <button onclick="toggleTutorPanel()" style="width:28px;height:28px;border-radius:50%;background:var(--surface-3);color:var(--ink-3);font-size:15px;display:flex;align-items:center;justify-content:center;">✕</button>
+  </div>
+  <div class="chat-suggestions tutor-suggestions" id="chat-suggestions">
+    <button class="chat-suggestion" data-suggestion="Explain the concept of mitosis in simple terms">🔬 Explain mitosis</button>
+    <button class="chat-suggestion" data-suggestion="What are the key differences between DNA and RNA?">🧬 DNA vs RNA</button>
+    <button class="chat-suggestion" data-suggestion="Help me understand photosynthesis step by step">🌿 Photosynthesis</button>
+    <button class="chat-suggestion" data-suggestion="Can you quiz me on the French Revolution?">🏛️ French Revolution quiz</button>
+  </div>
+  <div class="chat-messages tutor-messages" id="chat-messages">
+    <div class="chat-msg ai">
+      <div class="chat-avatar ai">🧠</div>
+      <div class="chat-bubble">Hey! I'm your AI study tutor. Ask me anything about your notes or subjects — I can explain concepts, help you understand difficult material, or quiz you. What are we studying?</div>
+    </div>
+  </div>
+  <div class="chat-input-row tutor-input-row">
+    <textarea class="chat-input" id="chat-input" placeholder="Ask anything…" rows="1"></textarea>
+    <button class="btn-send" id="chat-send-btn">➤</button>
+  </div>
 </div>
 
 <!-- Toast Container -->

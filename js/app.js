@@ -140,7 +140,20 @@ function showPage(name) {
 
   if (name === 'dashboard') renderDashboard();
   if (name === 'notes') renderNotes();
-  if (name === 'quiz' && typeof renderPastQuizzes === 'function') renderPastQuizzes(); // Add this line
+  if (name === 'quiz' && typeof renderPastQuizzes === 'function') renderPastQuizzes();
+
+  // Show/hide floating AI Tutor FAB
+  const fab = document.getElementById('tutor-fab');
+  if (fab) {
+    if (name === 'reviewer' || name === 'notes') {
+      fab.classList.remove('hidden');
+    } else {
+      fab.classList.add('hidden');
+      // Also close the panel if navigating away
+      const panel = document.getElementById('tutor-panel');
+      if (panel) panel.classList.add('hidden');
+    }
+  }
 }
 
 // Settings
@@ -184,8 +197,37 @@ function clearAllData() {
   showToast('Data cleared', '');
 }
 
-function toggleDropdown() {
-  document.getElementById('user-dropdown').classList.toggle('hidden');
+function toggleTutorPanel() {
+  const panel = document.getElementById('tutor-panel');
+  if (panel) panel.classList.toggle('hidden');
+}
+
+function openNewNoteModal() {
+  document.getElementById('new-note-title').value = '';
+  document.getElementById('new-note-text').value = '';
+  document.getElementById('new-note-char-count').textContent = '';
+  document.getElementById('new-note-modal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('new-note-title').focus(), 100);
+}
+
+function closeNewNoteModal() {
+  document.getElementById('new-note-modal').classList.add('hidden');
+}
+
+async function summarizeFromNoteModal() {
+  const title = document.getElementById('new-note-title').value.trim();
+  const text = document.getElementById('new-note-text').value.trim();
+  if (!text || text.length < 30) {
+    showToast('Please paste some text first (minimum 30 characters).', 'error');
+    return;
+  }
+  // Populate reviewer fields and switch to reviewer page
+  document.getElementById('text-input').value = text;
+  document.getElementById('note-title-input').value = title;
+  closeNewNoteModal();
+  showPage('reviewer');
+  // Trigger summarize
+  await handleSummarize();
 }
 
 // Dark Mode Functions
@@ -256,13 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => showPage(btn.getAttribute('data-page')));
   });
 
-  document.getElementById('user-btn')?.addEventListener('click', toggleDropdown);
-  
-  document.addEventListener('click', e => {
-    const btn = document.getElementById('user-btn');
-    if (btn && !btn.contains(e.target)) {
-      document.getElementById('user-dropdown')?.classList.add('hidden');
-    }
+  document.getElementById('new-note-text')?.addEventListener('input', function() {
+    const count = this.value.length;
+    const el = document.getElementById('new-note-char-count');
+    if (el) el.textContent = count > 0 ? `${count.toLocaleString()} chars` : '';
   });
 
   const chatInput = document.getElementById('chat-input');

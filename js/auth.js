@@ -230,6 +230,8 @@ async function enterApp(user) {
 
   document.getElementById('user-avatar').textContent      = initials;
   document.getElementById('user-name-display').textContent = name.split(' ')[0];
+  const emailEl = document.getElementById('user-email-display');
+  if (emailEl) emailEl.textContent = user.email || '';
 
   const hour  = new Date().getHours();
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
