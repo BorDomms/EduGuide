@@ -28,9 +28,9 @@
   --radius-xl:  32px;
   --shadow:     0 2px 16px rgba(60,50,120,0.08);
   --shadow-lg:  0 8px 40px rgba(60,50,120,0.14);
-  --font:       'Sora', sans-serif;
-  --font-display: 'DM Serif Display', serif;
-  --font-mono:  'JetBrains Mono', monospace;
+  --font:       'Inter', sans-serif;
+  --font-display: 'Inter', sans-serif;
+  --font-mono:  'Space Mono', monospace;
   --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
 }
 
