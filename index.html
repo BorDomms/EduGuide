@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -17,7 +18,7 @@
 <div id="auth-screen">
   <div class="auth-panel-left">
     <div class="auth-brand">
-      <div class="auth-brand-icon">🎓</div>
+      <div class="auth-brand-icon"><i class="fas fa-graduation-cap"></i></div>
       <span class="auth-brand-name">EduGuide</span>
     </div>
     <div class="auth-hero">
@@ -25,10 +26,10 @@
       <p>Upload your notes or documents, get instant AI summaries, test your knowledge, and track how well you really know the material.</p>
     </div>
     <div class="auth-features">
-      <div class="auth-feat"><div class="auth-feat-dot"></div>AI-powered document summarization</div>
-      <div class="auth-feat"><div class="auth-feat-dot"></div>Auto-generated quizzes & questionnaires</div>
-      <div class="auth-feat"><div class="auth-feat-dot"></div>Proficiency tracking across subjects</div>
-      <div class="auth-feat"><div class="auth-feat-dot"></div>24/7 AI study assistant chatbot</div>
+      <div class="auth-feat"><div class="auth-feat-dot"></div><i class="fas fa-robot" style="margin-right: 8px;"></i> AI-powered document summarization</div>
+      <div class="auth-feat"><div class="auth-feat-dot"></div><i class="fas fa-question-circle" style="margin-right: 8px;"></i> Auto-generated quizzes & questionnaires</div>
+      <div class="auth-feat"><div class="auth-feat-dot"></div><i class="fas fa-chart-line" style="margin-right: 8px;"></i> Proficiency tracking across subjects</div>
+      <div class="auth-feat"><div class="auth-feat-dot"></div><i class="fas fa-comments" style="margin-right: 8px;"></i> 24/7 AI study assistant chatbot</div>
     </div>
   </div>
 
@@ -53,20 +54,15 @@
           <div style="display: flex; align-items: center; gap: 8px;">
             <input type="password" id="login-password" placeholder="••••••••" style="flex: 1;" />
             <button type="button" class="toggle-password" data-target="login-password" style="background: var(--surface-2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-              <span class="toggle-icon-eye">👁️</span>
-              <span class="toggle-icon-eye-off" style="display: none;">🙈</span>
+              <i class="fas fa-eye toggle-icon-eye"></i>
+              <i class="fas fa-eye-slash toggle-icon-eye-off" style="display: none;"></i>
             </button>
           </div>
         </div>
         <button class="btn-primary" id="login-btn">Sign in</button>
         <div class="divider">or continue with</div>
         <button class="btn-google" id="google-btn">
-          <svg class="google-icon" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/>
-            <path fill="#34A853" d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09C3.515 21.3 7.615 24 12.255 24z"/>
-            <path fill="#FBBC05" d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62h-3.98a11.86 11.86 0 000 10.76l3.98-3.09z"/>
-            <path fill="#EA4335" d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C18.205 1.19 15.495 0 12.255 0c-4.64 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/>
-          </svg>
+          <i class="fab fa-google google-icon"></i>
           Continue with Google
         </button>
       </div>
@@ -89,20 +85,15 @@
           <div style="display: flex; align-items: center; gap: 8px;">
             <input type="password" id="signup-password" placeholder="Min. 8 characters" style="flex: 1;" />
             <button type="button" class="toggle-password" data-target="signup-password" style="background: var(--surface-2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-              <span class="toggle-icon-eye">👁️</span>
-              <span class="toggle-icon-eye-off" style="display: none;">🙈</span>
+              <i class="fas fa-eye toggle-icon-eye"></i>
+              <i class="fas fa-eye-slash toggle-icon-eye-off" style="display: none;"></i>
             </button>
           </div>
         </div>
         <button class="btn-primary" id="signup-btn">Create account</button>
         <div class="divider">or continue with</div>
         <button class="btn-google" id="google-btn-2">
-          <svg class="google-icon" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/>
-            <path fill="#34A853" d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09C3.515 21.3 7.615 24 12.255 24z"/>
-            <path fill="#FBBC05" d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62h-3.98a11.86 11.86 0 000 10.76l3.98-3.09z"/>
-            <path fill="#EA4335" d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C18.205 1.19 15.495 0 12.255 0c-4.64 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/>
-          </svg>
+          <i class="fab fa-google google-icon"></i>
           Continue with Google
         </button>
       </div>
@@ -115,7 +106,7 @@
 ════════════════════════════════════════ -->
 <div id="config-modal" class="modal-backdrop hidden">
   <div class="modal">
-    <h2>⚙️ Setup API Keys</h2>
+    <h2><i class="fas fa-cog"></i> Setup API Keys</h2>
     <p>Connect your Supabase project and Cerebras API to power EduGuide. These are stored locally in your browser.</p>
     <div class="config-field">
       <label>Supabase URL</label>
@@ -143,16 +134,16 @@
 <div id="app-screen" class="hidden">
 
   <!-- Topbar -->
-    <header class="topbar">
+  <header class="topbar">
     <div class="topbar-brand">
-      <div class="topbar-logo">🎓</div>
+      <div class="topbar-logo"><i class="fas fa-graduation-cap"></i></div>
       <span class="topbar-name">EduGuide</span>
     </div>
     <div style="display: flex; align-items: center; gap: 12px;">
       <!-- Dark Mode Toggle Button -->
       <div class="dark-mode-toggle" id="dark-mode-toggle">
-        <span class="toggle-icon">☀️</span>
-        <span class="toggle-icon">🌙</span>
+        <i class="fas fa-sun toggle-icon"></i>
+        <i class="fas fa-moon toggle-icon"></i>
       </div>
     </div>
   </header>
@@ -161,42 +152,42 @@
   <nav class="sidebar">
     <div class="sidebar-label">Study Tools</div>
     <button class="sidebar-item active" data-page="dashboard">
-      <div class="sidebar-icon">🏠</div> Dashboard
+      <div class="sidebar-icon"><i class="fas fa-home"></i></div> Dashboard
     </button>
     <button class="sidebar-item" data-page="reviewer">
-      <div class="sidebar-icon">📄</div> Reviewer
+      <div class="sidebar-icon"><i class="fas fa-file-alt"></i></div> Reviewer
     </button>
     <button class="sidebar-item" data-page="quiz">
-      <div class="sidebar-icon">🎯</div> Quiz
+      <div class="sidebar-icon"><i class="fas fa-tasks"></i></div> Quiz
     </button>
     <button class="sidebar-item" data-page="notes">
-      <div class="sidebar-icon">📚</div> My Notes
+      <div class="sidebar-icon"><i class="fas fa-book"></i></div> My Notes
     </button>
 
     <div class="sidebar-label" style="margin-top: 8px;">Assistant</div>
     <div style="padding: 8px 12px; font-size: 0.8rem; color: var(--ink-4); line-height: 1.5;">
-      💬 Open the AI Tutor from the <strong style="color:var(--ink-3);">Reviewer</strong> or <strong style="color:var(--ink-3);">Notes</strong> tab.
+      <i class="fas fa-comment-dots"></i> Open the AI Tutor from the <strong style="color:var(--ink-3);">Reviewer</strong> or <strong style="color:var(--ink-3);">Notes</strong> tab.
     </div>
 
     <div style="flex: 1;"></div>
 
-            <div class="sidebar-label">Account</div>
-            <!-- User Profile Card -->
-            <div class="sidebar-profile">
-              <div class="user-avatar sidebar-avatar" id="user-avatar-sidebar">?</div>
-              <div class="sidebar-profile-info">
-                <div class="sidebar-profile-name" id="user-name-sidebar">User</div>
-                <div class="sidebar-profile-email" id="user-email-sidebar"></div>
-              </div>
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <button class="sidebar-item" id="settings-btn-sidebar" data-page="settings" style="width: 48px; justify-content: center;">
-                <div class="sidebar-icon" style="background:var(--violet-soft);">⚙️</div>
-              </button>
-              <button class="sidebar-item sidebar-item-danger" id="logout-btn-sidebar" style="flex: 1; color:var(--danger);">
-                <div class="sidebar-icon" style="background:var(--rose-soft);">🚪</div> Sign Out
-              </button>
-            </div>
+    <div class="sidebar-label">Account</div>
+    <!-- User Profile Card -->
+    <div class="sidebar-profile">
+      <div class="user-avatar sidebar-avatar" id="user-avatar-sidebar"><i class="fas fa-user"></i></div>
+      <div class="sidebar-profile-info">
+        <div class="sidebar-profile-name" id="user-name-sidebar">User</div>
+        <div class="sidebar-profile-email" id="user-email-sidebar"></div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button class="sidebar-item" id="settings-btn-sidebar" data-page="settings" style="width: 48px; justify-content: center;">
+        <div class="sidebar-icon" style="background:var(--violet-soft);"><i class="fas fa-cog"></i></div>
+      </button>
+      <button class="sidebar-item sidebar-item-danger" id="logout-btn-sidebar" style="flex: 1; color:var(--danger);">
+        <div class="sidebar-icon" style="background:var(--rose-soft);"><i class="fas fa-sign-out-alt"></i></div> Sign Out
+      </button>
+    </div>
   </nav>
 
   <!-- Main Content -->
@@ -205,27 +196,27 @@
     <!-- Dashboard Page -->
     <div id="page-dashboard" class="page active">
       <div class="page-header">
-        <h1 id="welcome-msg">Good morning 👋</h1>
+        <h1 id="welcome-msg">Good morning <i class="fas fa-hand-peace"></i></h1>
         <p>Here's your study overview.</p>
       </div>
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-icon jade">📄</div>
+          <div class="stat-icon jade"><i class="fas fa-file-alt"></i></div>
           <div class="stat-value" id="stat-notes">0</div>
           <div class="stat-label">Notes Created</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon violet">🎯</div>
+          <div class="stat-icon violet"><i class="fas fa-chart-simple"></i></div>
           <div class="stat-value" id="stat-quizzes">0</div>
           <div class="stat-label">Quizzes Taken</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon amber">⭐</div>
+          <div class="stat-icon amber"><i class="fas fa-star"></i></div>
           <div class="stat-value" id="stat-avg">—</div>
           <div class="stat-label">Avg. Score</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon rose">🔥</div>
+          <div class="stat-icon rose"><i class="fas fa-fire"></i></div>
           <div class="stat-value" id="stat-streak">0</div>
           <div class="stat-label">Day Streak</div>
         </div>
@@ -234,7 +225,7 @@
         <div class="card">
           <div class="card-title">
             Recent Notes
-            <button class="btn-outline" data-page="reviewer" style="padding: 6px 12px; font-size: 0.8rem;">+ New</button>
+            <button class="btn-outline" data-page="reviewer" style="padding: 6px 12px; font-size: 0.8rem;"><i class="fas fa-plus"></i> New</button>
           </div>
           <div id="recent-notes-list"></div>
         </div>
@@ -248,7 +239,7 @@
     <!-- Reviewer Page -->
     <div id="page-reviewer" class="page">
       <div class="page-header">
-        <h1>📄 Reviewer</h1>
+        <h1><i class="fas fa-file-alt"></i> Reviewer</h1>
         <p>Paste your notes or upload a document — AI will summarize it with key points.</p>
       </div>
 
@@ -257,7 +248,7 @@
         <div class="reviewer-left">
           <textarea class="text-input-area reviewer-textarea" id="text-input" placeholder="Paste your notes, lecture content, or any text you want to study…"></textarea>
           <div class="btn-row" style="margin-top: 0.75rem;">
-            <button class="btn-outline" id="clear-reviewer-btn">Clear</button>
+            <button class="btn-outline" id="clear-reviewer-btn"><i class="fas fa-eraser"></i> Clear</button>
           </div>
         </div>
 
@@ -270,7 +261,7 @@
 
           <div class="upload-zone upload-zone-compact" id="upload-zone">
             <input type="file" id="file-input" accept=".pdf,.txt,.docx,.md" />
-            <div class="upload-icon" style="width:44px;height:44px;font-size:20px;margin-bottom:0.6rem;">📤</div>
+            <div class="upload-icon" style="width:44px;height:44px;font-size:20px;margin-bottom:0.6rem;"><i class="fas fa-cloud-upload-alt"></i></div>
             <h3 style="font-size:0.95rem;">Drop your document here</h3>
             <p style="font-size:0.8rem;">or click to browse</p>
             <div class="file-types" style="margin-top:0.75rem;">
@@ -280,7 +271,7 @@
             </div>
           </div>
 
-          <button class="btn-jade" id="summarize-btn" style="width:100%;margin-top:0.75rem;"><span>✨</span> Summarize with AI</button>
+          <button class="btn-jade" id="summarize-btn" style="width:100%;margin-top:0.75rem;"><i class="fas fa-magic"></i> Summarize with AI</button>
         </div>
       </div>
 
@@ -289,11 +280,11 @@
         <div class="summary-output">
           <div class="summary-header">
             <div class="summary-title">
-              🧠 AI Summary
+              <i class="fas fa-brain"></i> AI Summary
               <span id="summary-source-label" style="font-size: 0.8rem; color: var(--ink-3); font-weight: 400;"></span>
             </div>
             <button class="btn-outline" id="save-note-btn" style="padding: 7px 14px; font-size: 0.8125rem; gap: 6px;">
-              <span>💾</span> Save Note
+              <i class="fas fa-save"></i> Save Note
             </button>
           </div>
           <div class="summary-body">
@@ -321,7 +312,7 @@
                   <option value="25">25 questions</option>
                 </select>
               </div>
-              <button class="btn-jade" id="generate-quiz-btn" style="padding: 11px 20px;">🎯 Generate Quiz</button>
+              <button class="btn-jade" id="generate-quiz-btn" style="padding: 11px 20px;"><i class="fas fa-question-circle"></i> Generate Quiz</button>
             </div>
           </div>
         </div>
@@ -346,14 +337,14 @@
     <!-- Quiz Page -->
     <div id="page-quiz" class="page">
       <div class="page-header">
-        <h1>🎯 Quiz</h1>
+        <h1><i class="fas fa-tasks"></i> Quiz</h1>
         <p>Test your knowledge. Results are recorded to your proficiency.</p>
       </div>
 
       <!-- Quiz Landing (No Active Quiz) -->
       <div id="quiz-landing">
         <div style="max-width: 540px; margin: 0 auto; text-align: center; padding: 3rem 0;">
-          <div style="font-size: 4rem; margin-bottom: 1.5rem;">🎯</div>
+          <div style="font-size: 4rem; margin-bottom: 1.5rem;"><i class="fas fa-question-circle"></i></div>
           <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem;">No quiz loaded</h2>
           <p style="color: var(--ink-3); margin-bottom: 1rem;">Go to the Reviewer tab, summarize a document, and click "Generate Quiz" — or generate one from any saved note.</p>
           <div style="display: flex; gap: 12px; justify-content: center; align-items: center; margin-bottom: 1.5rem;">
@@ -368,7 +359,7 @@
               <option value="25">25 questions</option>
             </select>
           </div>
-          <button class="btn-violet" data-page="reviewer" style="background: var(--violet); color: #fff; padding: 13px 28px; border-radius: var(--radius); font-size: 0.9375rem; font-weight: 600; border: none; cursor: pointer;">Go to Reviewer</button>
+          <button class="btn-violet" data-page="reviewer" style="background: var(--violet); color: #fff; padding: 13px 28px; border-radius: var(--radius); font-size: 0.9375rem; font-weight: 600; border: none; cursor: pointer;"><i class="fas fa-arrow-right"></i> Go to Reviewer</button>
         </div>
       </div>
 
@@ -384,7 +375,7 @@
           </div>
           <div id="quiz-question-area"></div>
           <div class="quiz-nav">
-            <button class="btn-jade" id="next-btn" style="padding: 11px 24px;">Next →</button>
+            <button class="btn-jade" id="next-btn" style="padding: 11px 24px;">Next <i class="fas fa-arrow-right"></i></button>
           </div>
         </div>
       </div>
@@ -419,16 +410,16 @@
             </div>
           </div>
           <div style="display: flex; gap: 10px;">
-            <button class="btn-jade" id="retake-quiz-btn" style="flex: 1;">↺ Retake</button>
-            <button class="btn-outline" data-page="dashboard">Dashboard</button>
+            <button class="btn-jade" id="retake-quiz-btn" style="flex: 1;"><i class="fas fa-redo-alt"></i> Retake</button>
+            <button class="btn-outline" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</button>
           </div>
         </div>
       </div>
       <!-- Past Quizzes Section -->
       <div id="past-quizzes-section" style="margin-top: 2rem;">
         <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
-          📜 Past Quizzes
-          <button id="clear-quizzes-btn" class="btn-outline" style="padding: 4px 12px; font-size: 0.75rem; color: var(--danger); border-color: var(--danger);">Clear All</button>
+          <i class="fas fa-history"></i> Past Quizzes
+          <button id="clear-quizzes-btn" class="btn-outline" style="padding: 4px 12px; font-size: 0.75rem; color: var(--danger); border-color: var(--danger);"><i class="fas fa-trash-alt"></i> Clear All</button>
         </h3>
         <div id="past-quizzes-list" style="display: flex; flex-direction: column; gap: 8px;">
           <!-- Past quizzes will appear here -->
@@ -440,10 +431,10 @@
     <div id="page-notes" class="page">
       <div class="page-header" style="display: flex; align-items: flex-start; justify-content: space-between;">
         <div>
-          <h1>📚 My Notes</h1>
+          <h1><i class="fas fa-book"></i> My Notes</h1>
           <p>Your saved summaries and documents.</p>
         </div>
-        <button class="btn-jade" onclick="openNewNoteModal()" style="padding: 10px 18px; font-size: 0.875rem;">+ New Note</button>
+        <button class="btn-jade" onclick="openNewNoteModal()" style="padding: 10px 18px; font-size: 0.875rem;"><i class="fas fa-plus"></i> New Note</button>
       </div>
       <div class="notes-grid" id="notes-grid"></div>
     </div>
@@ -453,10 +444,10 @@
       <div class="modal new-note-modal-inner" style="max-width:760px;width:100%;padding:0;overflow:hidden;">
         <div style="padding:1.5rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);">
           <div style="display:flex;align-items:center;gap:12px;flex:1;">
-            <span style="font-size:1.3rem;">📝</span>
+            <i class="fas fa-pen-alt"></i>
             <input type="text" id="new-note-title" placeholder="Note title…" style="font-size:1.1rem;font-weight:600;background:transparent;border:none;color:var(--ink);width:100%;font-family:var(--font);" />
           </div>
-          <button onclick="closeNewNoteModal()" style="width:32px;height:32px;border-radius:50%;background:var(--surface-3);color:var(--ink-3);font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:12px;">✕</button>
+          <button onclick="closeNewNoteModal()" style="width:32px;height:32px;border-radius:50%;background:var(--surface-3);color:var(--ink-3);font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:12px;"><i class="fas fa-times"></i></button>
         </div>
         <div style="padding:1.5rem 2rem;">
           <textarea id="new-note-text" placeholder="Paste your notes, lecture content, or anything you want to study…" style="width:100%;min-height:320px;padding:14px 16px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius-lg);font-size:0.9375rem;color:var(--ink);resize:vertical;line-height:1.7;font-family:var(--font);transition:var(--transition);" onfocus="this.style.borderColor='var(--violet)';this.style.boxShadow='0 0 0 3px var(--violet-soft)'" onblur="this.style.borderColor='';this.style.boxShadow=''"></textarea>
@@ -464,7 +455,7 @@
         <div style="padding:1rem 2rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;align-items:center;">
           <span id="new-note-char-count" style="font-size:0.8rem;color:var(--ink-4);margin-right:auto;"></span>
           <button class="btn-outline" onclick="closeNewNoteModal()">Cancel</button>
-          <button class="btn-jade" onclick="summarizeFromNoteModal()" style="flex:unset;padding:11px 22px;">✨ Summarize with AI</button>
+          <button class="btn-jade" onclick="summarizeFromNoteModal()" style="flex:unset;padding:11px 22px;"><i class="fas fa-magic"></i> Summarize with AI</button>
         </div>
       </div>
     </div>
@@ -475,7 +466,7 @@
     <!-- Settings Page -->
     <div id="page-settings" class="page">
       <div class="page-header">
-        <h1>⚙️ Settings</h1>
+        <h1><i class="fas fa-cog"></i> Settings</h1>
         <p>Manage your API keys and preferences.</p>
       </div>
       <div style="max-width: 560px;">
@@ -494,14 +485,14 @@
             <input type="password" id="settings-cerebras-key" placeholder="csk-..." />
             <div class="config-hint">Get from <a href="https://cloud.cerebras.ai" target="_blank" style="color: var(--violet);">cloud.cerebras.ai</a> - Free tier: 14,400 requests/day</div>
           </div>
-          <button class="btn-jade" id="save-settings-btn">Save Configuration</button>
+          <button class="btn-jade" id="save-settings-btn"><i class="fas fa-save"></i> Save Configuration</button>
         </div>
         <div class="card">
           <div class="card-title">Data</div>
           <p style="font-size: 0.875rem; color: var(--ink-3); margin-bottom: 1rem;">Manage your local study data stored in this browser.</p>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="btn-outline" id="export-data-btn" style="font-size: 0.875rem; padding: 9px 16px;">📤 Export Notes</button>
-            <button class="btn-outline" id="clear-data-btn" style="font-size: 0.875rem; padding: 9px 16px; color: var(--danger); border-color: var(--danger);">🗑 Clear All Data</button>
+            <button class="btn-outline" id="export-data-btn" style="font-size: 0.875rem; padding: 9px 16px;"><i class="fas fa-download"></i> Export Notes</button>
+            <button class="btn-outline" id="clear-data-btn" style="font-size: 0.875rem; padding: 9px 16px; color: var(--danger); border-color: var(--danger);"><i class="fas fa-trash-alt"></i> Clear All Data</button>
           </div>
         </div>
       </div>
@@ -512,33 +503,35 @@
 
 <!-- Floating AI Tutor (visible on reviewer & notes pages only) -->
 <button id="tutor-fab" class="tutor-fab hidden" onclick="toggleTutorPanel()" title="AI Tutor">
-  <span id="tutor-fab-icon">🧠</span>
+  <i class="fas fa-brain"></i>
   <span id="tutor-fab-label">AI Tutor</span>
 </button>
 
 <div id="tutor-panel" class="tutor-panel hidden">
   <div class="tutor-panel-header">
     <div style="display:flex;align-items:center;gap:8px;">
-      <span style="font-size:1.2rem;">🧠</span>
+      <i class="fas fa-brain" style="font-size:1.2rem;"></i>
       <span style="font-weight:700;font-size:0.95rem;">AI Tutor</span>
     </div>
-    <button onclick="toggleTutorPanel()" style="width:28px;height:28px;border-radius:50%;background:var(--surface-3);color:var(--ink-3);font-size:15px;display:flex;align-items:center;justify-content:center;">✕</button>
+    <button onclick="toggleTutorPanel()" style="width:28px;height:28px;border-radius:50%;background:var(--surface-3);color:var(--ink-3);font-size:15px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-times"></i></button>
   </div>
   <div class="chat-suggestions tutor-suggestions" id="chat-suggestions">
-    <button class="chat-suggestion" data-suggestion="Explain the concept of mitosis in simple terms">🔬 Explain mitosis</button>
-    <button class="chat-suggestion" data-suggestion="What are the key differences between DNA and RNA?">🧬 DNA vs RNA</button>
-    <button class="chat-suggestion" data-suggestion="Help me understand photosynthesis step by step">🌿 Photosynthesis</button>
-    <button class="chat-suggestion" data-suggestion="Can you quiz me on the French Revolution?">🏛️ French Revolution quiz</button>
+    <button class="chat-suggestion" data-suggestion="Explain the concept of mitosis in simple terms"><i class="fas fa-microscope"></i> Explain mitosis</button>
+    <button class="chat-suggestion" data-suggestion="What are the key differences between DNA and RNA?"><i class="fas fa-dna"></i> DNA vs RNA</button>
+    <button class="chat-suggestion" data-suggestion="Help me understand photosynthesis step by step"><i class="fas fa-leaf"></i> Photosynthesis</button>
+    <button class="chat-suggestion" data-suggestion="Can you quiz me on the French Revolution?"><i class="fas fa-landmark"></i> French Revolution quiz</button>
   </div>
   <div class="chat-messages tutor-messages" id="chat-messages">
     <div class="chat-msg ai">
-      <div class="chat-avatar ai">🧠</div>
-      <div class="chat-bubble">Hey! I'm your AI study tutor. Ask me anything about your notes or subjects — I can explain concepts, help you understand difficult material, or quiz you. What are we studying?</div>
+      <div class="chat-avatar ai"><i class="fas fa-brain"></i></div>
+      <div class="chat-bubble">
+        Hey! I'm your AI study tutor. Ask me anything about your notes or subjects — I can explain concepts, help you understand difficult material, or quiz you. What are we studying?
+      </div>
     </div>
   </div>
   <div class="chat-input-row tutor-input-row">
     <textarea class="chat-input" id="chat-input" placeholder="Ask anything…" rows="1"></textarea>
-    <button class="btn-send" id="chat-send-btn">➤</button>
+    <button class="btn-send" id="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
   </div>
 </div>
 

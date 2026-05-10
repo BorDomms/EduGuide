@@ -267,7 +267,13 @@ a { color: inherit; text-decoration: none; }
   transition: var(--transition);
 }
 .btn-google:hover { background: var(--surface-2); border-color: var(--border-med); }
-.google-icon { width: 20px; height: 20px; }
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 18px;
+}
+
 .auth-error {
   background: #fef2f2;
   color: var(--danger);
@@ -1182,7 +1188,7 @@ a { color: inherit; text-decoration: none; }
 /* ── DARK MODE TOGGLE BUTTON ─────────────────────────── */
 .dark-mode-toggle {
   background: var(--surface-2);
-  border: 1.5px solid var(--border-med);
+  border: 1.5px solid #fbbf24;  /* Yellow border for light mode */
   border-radius: 40px;
   width: 72px;
   height: 36px;
@@ -1194,7 +1200,6 @@ a { color: inherit; text-decoration: none; }
   transition: var(--transition);
   position: relative;
   overflow: hidden;
-  margin-top: 2px;  /* Moves the whole toggle down by 2px */
 }
 
 .dark-mode-toggle:hover {
@@ -1202,14 +1207,15 @@ a { color: inherit; text-decoration: none; }
 }
 
 .toggle-icon {
-  font-size: 15px;
+  font-size: 16px;
   width: 28px;
-  height: 100%;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1;
   line-height: 1;
+  color: var(--ink-3);
 }
 
 .dark-mode-toggle::before {
@@ -1218,21 +1224,26 @@ a { color: inherit; text-decoration: none; }
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: var(--violet);
+  background: #fbbf24;  /* Yellow sliding circle for light mode */
   transition: transform 0.3s ease;
   left: 3px;
   top: 50%;
   transform: translateY(-50%);
 }
 
-body.dark-mode .dark-mode-toggle::before {
-  transform: translateX(36px) translateY(-50%);
-  background: var(--jade);
+/* Dark mode state */
+body.dark-mode .dark-mode-toggle {
+  border-color: #8b5cf6;  /* Purple border for dark mode */
+  background: var(--surface-3);
 }
 
-body.dark-mode .dark-mode-toggle {
-  background: var(--surface-3);
-  border-color: var(--violet);
+body.dark-mode .dark-mode-toggle::before {
+  transform: translateX(36px) translateY(-50%);
+  background: #a78bfa;  /* Light purple sliding circle for dark mode */
+}
+
+body.dark-mode .toggle-icon {
+  color: var(--ink-2);
 }
 
 /* ── DARK MODE QUIZ STYLES ───────────────────────────── */
