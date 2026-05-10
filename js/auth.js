@@ -217,7 +217,7 @@ async function enterApp(user) {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app-screen').classList.remove('hidden');
 
-  // 👇 ADD THIS - Restore dark mode preference after login
+  // Restore dark mode preference after login
   const savedMode = localStorage.getItem('eg_dark_mode');
   if (savedMode === 'enabled') {
     document.body.classList.add('dark-mode');
@@ -225,15 +225,19 @@ async function enterApp(user) {
     document.body.classList.remove('dark-mode');
   }
 
-  const name     = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Student';
+  const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Student';
   const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  const email = user.email || '';
 
-  document.getElementById('user-avatar').textContent      = initials;
-  document.getElementById('user-name-display').textContent = name.split(' ')[0];
-  const emailEl = document.getElementById('user-email-display');
-  if (emailEl) emailEl.textContent = user.email || '';
+  // Update SIDEBAR user display (bottom left)
+  const sidebarAvatar = document.getElementById('user-avatar-sidebar');
+  const sidebarName = document.getElementById('user-name-sidebar');
+  const sidebarEmail = document.getElementById('user-email-sidebar');
+  if (sidebarAvatar) sidebarAvatar.textContent = initials;
+  if (sidebarName) sidebarName.textContent = name;
+  if (sidebarEmail) sidebarEmail.textContent = email;
 
-  const hour  = new Date().getHours();
+  const hour = new Date().getHours();
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   document.getElementById('welcome-msg').textContent = `${greet}, ${name.split(' ')[0]} 👋`;
 

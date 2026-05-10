@@ -143,7 +143,7 @@
 <div id="app-screen" class="hidden">
 
   <!-- Topbar -->
-  <header class="topbar">
+    <header class="topbar">
     <div class="topbar-brand">
       <div class="topbar-logo">🎓</div>
       <span class="topbar-name">EduGuide</span>
@@ -153,16 +153,6 @@
       <div class="dark-mode-toggle" id="dark-mode-toggle">
         <span class="toggle-icon">☀️</span>
         <span class="toggle-icon">🌙</span>
-      </div>
-      <!-- User Dropdown -->
-      <div class="topbar-user" id="user-btn">
-        <div class="user-avatar" id="user-avatar">?</div>
-        <span id="user-name-display">User</span>
-        <span style="font-size: 12px; color: var(--ink-3);">▾</span>
-        <div id="user-dropdown" class="user-dropdown hidden">
-          <button class="user-dropdown-item" data-page="settings">⚙️ Settings</button>
-          <button class="user-dropdown-item danger" id="logout-btn">← Sign out</button>
-        </div>
       </div>
     </div>
   </header>
@@ -190,18 +180,23 @@
 
     <div style="flex: 1;"></div>
 
-    <div class="sidebar-label">Account</div>
-    <!-- User Profile Card -->
-    <div class="sidebar-profile">
-      <div class="user-avatar sidebar-avatar" id="user-avatar-sidebar">?</div>
-      <div class="sidebar-profile-info">
-        <div class="sidebar-profile-name" id="user-name-sidebar">User</div>
-        <div class="sidebar-profile-email" id="user-email-sidebar"></div>
-      </div>
-    </div>
-    <button class="sidebar-item sidebar-item-danger" id="logout-btn-sidebar" style="color:var(--danger);">
-      <div class="sidebar-icon" style="background:var(--rose-soft);">🚪</div> Sign Out
-    </button>
+            <div class="sidebar-label">Account</div>
+            <!-- User Profile Card -->
+            <div class="sidebar-profile">
+              <div class="user-avatar sidebar-avatar" id="user-avatar-sidebar">?</div>
+              <div class="sidebar-profile-info">
+                <div class="sidebar-profile-name" id="user-name-sidebar">User</div>
+                <div class="sidebar-profile-email" id="user-email-sidebar"></div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="sidebar-item" id="settings-btn-sidebar" data-page="settings" style="width: 48px; justify-content: center;">
+                <div class="sidebar-icon" style="background:var(--violet-soft);">⚙️</div>
+              </button>
+              <button class="sidebar-item sidebar-item-danger" id="logout-btn-sidebar" style="flex: 1; color:var(--danger);">
+                <div class="sidebar-icon" style="background:var(--rose-soft);">🚪</div> Sign Out
+              </button>
+            </div>
   </nav>
 
   <!-- Main Content -->
