@@ -199,12 +199,30 @@ async function handleGoogleAuth() {
     return;
   }
 
+  // Clear any existing session before starting new OAuth flow
+  await supabaseClient.auth.signOut();
+  
+  // Clear any stored OAuth-related items
+  localStorage.removeItem('sb-' + PRESET_SUPABASE_URL + '-auth-token');
+  
+  // Get the current URL without any hash fragments or query params
+  const cleanUrl = window.location.origin + window.location.pathname;
+  
   const { error } = await supabaseClient.auth.signInWithOAuth({
     provider: 'google',
-    options:  { redirectTo: window.location.href }
+    options: {
+      redirectTo: cleanUrl,
+      queryParams: {
+        // Force Google to show account picker each time
+        prompt: 'select_account'
+      }
+    }
   });
 
-  if (error) showToast('Google sign-in failed: ' + error.message, 'error');
+  if (error) {
+    console.error('Google sign-in error:', error);
+    showToast('Google sign-in failed: ' + error.message, 'error');
+  }
 }
 
 /* ════════════════════════════════════════════
