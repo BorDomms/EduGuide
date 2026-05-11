@@ -151,11 +151,15 @@ function showPage(name) {
       fab.classList.remove('hidden');
     } else {
       fab.classList.add('hidden');
-      // Also close the panel if navigating away
       const panel = document.getElementById('tutor-panel');
       if (panel) panel.classList.add('hidden');
     }
   }
+
+  // Sync bottom nav active state on mobile
+  document.querySelectorAll('#mobile-bottom-nav .mobile-nav-item').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-page') === name);
+  });
 }
 
 // Settings
@@ -206,6 +210,56 @@ function toggleDropdown() {
 function toggleTutorPanel() {
   const panel = document.getElementById('tutor-panel');
   if (panel) panel.classList.toggle('hidden');
+}
+
+/* ── MOBILE NAV ─────────────────────────────── */
+function isMobile() { return window.innerWidth <= 768; }
+
+function toggleMobileNav() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('mobile-nav-overlay');
+  if (!sidebar) return;
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+  document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+}
+
+function closeMobileNav() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('mobile-nav-overlay');
+  if (!sidebar) return;
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function mobileNavTo(name) {
+  showPage(name);
+  // Update bottom nav active state
+  document.querySelectorAll('#mobile-bottom-nav .mobile-nav-item').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-page') === name);
+  });
+}
+
+function initMobileUI() {
+  const hamburger = document.getElementById('hamburger-btn');
+  const bottomNav = document.getElementById('mobile-bottom-nav');
+
+  function applyResponsive() {
+    const mobile = isMobile();
+    if (hamburger) hamburger.style.display = mobile ? 'flex' : 'none';
+    if (bottomNav) bottomNav.style.display = mobile ? 'flex' : 'none';
+  }
+
+  applyResponsive();
+  window.addEventListener('resize', applyResponsive);
+
+  // Close sidebar when a nav item is clicked on mobile
+  document.querySelectorAll('.sidebar-item[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (isMobile()) closeMobileNav();
+    });
+  });
 }
 
 function openNewNoteModal() {
@@ -361,6 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   initDarkMode();
+  initMobileUI();
 
   // Password visibility toggle - direct implementation
   const toggleButtons = document.querySelectorAll('.toggle-password');

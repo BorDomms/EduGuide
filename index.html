@@ -135,6 +135,7 @@
 
   <!-- Topbar -->
   <header class="topbar">
+    <button id="hamburger-btn" onclick="toggleMobileNav()" aria-label="Menu" style="display:none;">☰</button>
     <div class="topbar-brand">
       <div class="topbar-logo"><i class="fas fa-graduation-cap"></i></div>
       <span class="topbar-name">EduGuide</span>
@@ -549,5 +550,24 @@
 <script src="js/notes.js"></script>
 <script src="js/chat.js"></script>
 <script src="js/app.js"></script>
+<!-- Mobile nav overlay (closes drawer on tap-outside) -->
+<div id="mobile-nav-overlay" onclick="closeMobileNav()"></div>
+
+<!-- Mobile bottom navigation bar -->
+<nav id="mobile-bottom-nav" style="display:none;">
+  <button class="mobile-nav-item active" data-page="dashboard" onclick="mobileNavTo('dashboard')">
+    <span class="mobile-nav-item-icon">🏠</span>Dashboard
+  </button>
+  <button class="mobile-nav-item" data-page="reviewer" onclick="mobileNavTo('reviewer')">
+    <span class="mobile-nav-item-icon">📄</span>Reviewer
+  </button>
+  <button class="mobile-nav-item" data-page="quiz" onclick="mobileNavTo('quiz')">
+    <span class="mobile-nav-item-icon">🎯</span>Quiz
+  </button>
+  <button class="mobile-nav-item" data-page="notes" onclick="mobileNavTo('notes')">
+    <span class="mobile-nav-item-icon">📚</span>Notes
+  </button>
+</nav>
+
 </body>
 </html>
