@@ -373,6 +373,12 @@ function handleLogout() {
   appState.proficiency = {};
   appState.currentSummary = null;
   
+  // Hide AI Tutor FAB and panel
+  const tutorFab = document.getElementById('tutor-fab');
+  const tutorPanel = document.getElementById('tutor-panel');
+  if (tutorFab) tutorFab.classList.add('hidden');
+  if (tutorPanel) tutorPanel.classList.add('hidden');
+  
   // Show auth screen
   document.getElementById('app-screen').classList.add('hidden');
   document.getElementById('auth-screen').style.display = 'grid';
