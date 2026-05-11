@@ -7,7 +7,6 @@ async function sendChatMessage() {
 
   input.value = '';
   input.style.height = 'auto';
-  document.getElementById('chat-suggestions').classList.add('hidden');
 
   appendChatMsg('user', msg);
   appState.chatHistory.push({ role: 'user', content: msg });
@@ -23,10 +22,9 @@ async function sendChatMessage() {
 
 Guidelines:
 - Give clear, structured explanations
-- Use examples and analogies
-- Be encouraging and supportive
-- If asked to quiz the student, create 3-5 quick questions
-- Keep responses concise but thorough`;
+- Make it concise and easy to understand
+- Use examples and analogies as a short but effective way to clarify concepts
+- Be encouraging and supportive`;
 
   try {
     const historyPrompt = appState.chatHistory.slice(-8).map(m =>
