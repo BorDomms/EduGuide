@@ -461,6 +461,58 @@
       </div>
     </div>
 
+    <!-- Note Viewer Modal -->
+    <div id="note-viewer-modal" class="modal-backdrop hidden" onclick="if(event.target===this)closeNoteViewer()">
+      <div class="modal" style="max-width: 700px; width: 100%; height: 85vh; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column;">
+        <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface-2); flex-shrink: 0;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-file-alt" style="color: var(--violet);"></i>
+            <h3 id="viewer-note-title" style="font-size: 1.1rem; font-weight: 700; margin: 0;">Note Title</h3>
+          </div>
+          <button onclick="closeNoteViewer()" style="width: 32px; height: 32px; border-radius: 50%; background: var(--surface-3); color: var(--ink-3); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div style="flex: 1; overflow-y: auto; min-height: 0;">
+          <!-- View Mode -->
+          <div id="viewer-view-mode" style="padding: 1.5rem;">
+            <div style="line-height: 1.7; font-size: 0.9375rem; color: var(--ink); text-align: justify;" id="viewer-summary-text"></div>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+              <h4 style="font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); margin-bottom: 0.75rem;">
+                <i class="fas fa-list-ul"></i> Key Points
+              </h4>
+              <div id="viewer-key-points-list"></div>
+            </div>
+          </div>
+          
+          <!-- Edit Mode -->
+          <div id="viewer-edit-mode" style="display: none; padding: 1.5rem;">
+            <div class="field" style="margin-bottom: 1rem;">
+              <label>Note Title</label>
+              <input type="text" id="edit-note-title" style="width: 100%; padding: 10px 14px; background: var(--surface-2); border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 0.9rem;">
+            </div>
+            <div class="field" style="margin-bottom: 1rem;">
+              <label>AI Summary</label>
+              <textarea id="edit-summary-text" rows="8" style="width: 100%; padding: 10px 14px; background: var(--surface-2); border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; resize: vertical; text-align: justify;"></textarea>
+            </div>
+            <div class="field">
+              <label>Key Points</label>
+              <div id="edit-key-points-container" style="margin-bottom: 8px;"></div>
+              <button type="button" class="btn-outline" onclick="addKeyPointField()" style="padding: 8px 12px; font-size: 0.8rem; width: 100%;"><i class="fas fa-plus"></i> Add Key Point</button>
+            </div>
+          </div>
+        </div>
+        
+        <div style="padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; flex-shrink: 0;">
+          <button class="btn-outline" onclick="closeNoteViewer()" style="padding: 8px 16px;">Close</button>
+          <button id="viewer-edit-btn" class="btn-jade" onclick="enterEditMode()" style="padding: 8px 16px; flex: unset;"><i class="fas fa-edit"></i> Edit Note</button>
+          <button id="viewer-save-btn" class="btn-jade" onclick="saveNoteEdit()" style="padding: 8px 16px; flex: unset; display: none;"><i class="fas fa-save"></i> Save Changes</button>
+          <button id="viewer-cancel-btn" class="btn-outline" onclick="cancelEdit()" style="padding: 8px 16px; display: none;">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <!-- AI Tutor is now a floating panel, not a page; placeholder kept for showPage compatibility -->
     <div id="page-chat" class="page" style="display:none !important;"><div style="display:none;"></div></div>
 
