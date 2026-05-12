@@ -191,7 +191,7 @@ async function handleSignup() {
 }
 
 /* ════════════════════════════════════════════
-   GOOGLE OAUTH
+   GOOGLE OAUTH - WITH CONFLICT HANDLING
 ════════════════════════════════════════════ */
 async function handleGoogleAuth() {
   if (!supabaseClient) {
@@ -199,29 +199,133 @@ async function handleGoogleAuth() {
     return;
   }
 
-  // Clear any existing session before starting new OAuth flow
+  // CLEAR EXISTING SESSION before starting OAuth
   await supabaseClient.auth.signOut();
   
-  // Clear any stored OAuth-related items
-  localStorage.removeItem('sb-' + PRESET_SUPABASE_URL + '-auth-token');
+  // Clear local storage auth tokens
+  const supabaseUrl = getConfig().supabaseUrl;
+  if (supabaseUrl) {
+    const storageKey = `sb-${supabaseUrl.replace(/[^a-zA-Z0-9]/g, '')}-auth-token`;
+    localStorage.removeItem(storageKey);
+  }
+
+  const btn = document.getElementById('google-btn') || document.getElementById('google-btn-2');
+  const originalText = btn ? btn.innerHTML : '';
   
-  // Get the current URL without any hash fragments or query params
-  const cleanUrl = window.location.origin + window.location.pathname;
-  
-  const { error } = await supabaseClient.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: cleanUrl,
-      queryParams: {
-        // Force Google to show account picker each time
-        prompt: 'select_account'
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Redirecting...';
+  }
+
+  try {
+    // Get the email from the login form if user is trying to sign in
+    const loginEmail = document.getElementById('login-email')?.value.trim();
+    
+    // If user entered an email in login form, check if it exists as email/password account
+    if (loginEmail && isValidEmail(loginEmail)) {
+      // Try to check if account exists with email/password (no API for direct check, but we can attempt)
+      showToast('Checking existing account...', '');
+      
+      // Attempt to sign in with a fake password to see if email exists
+      // This is a hack, but Supabase doesn't expose a "user exists" endpoint
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email: loginEmail,
+        password: 'temp-password-check-' + Date.now()
+      });
+      
+      // If error is "Invalid login credentials", the email exists (but password is wrong)
+      // If error is "User not found", then no account exists with that email
+      if (error && error.message.includes('Invalid login credentials')) {
+        // Email exists with password - ask user what to do
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }
+        
+        const shouldLink = confirm(
+          `An account with ${loginEmail} already exists with email/password.\n\n` +
+          `Would you like to link your Google account to the existing account?\n\n` +
+          `• Click "OK" to link accounts (you can then use both methods)\n` +
+          `• Click "Cancel" to stay on the login page\n\n` +
+          `If you link, you'll be able to sign in with either method.`
+        );
+        
+        if (!shouldLink) {
+          return;
+        }
+        
+        // User wants to link - we need to sign in with email/password first
+        // This requires the user to enter their password
+        const password = prompt(
+          `Please enter your password for ${loginEmail} to link your Google account.\n\n` +
+          `This is required for security to verify you own the account.`
+        );
+        
+        if (!password) {
+          showToast('Password required to link accounts.', 'error');
+          return;
+        }
+        
+        // Sign in with email/password
+        const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
+          email: loginEmail,
+          password: password
+        });
+        
+        if (signInError) {
+          showToast('Invalid password. Account linking failed.', 'error');
+          return;
+        }
+        
+        if (signInData.session) {
+          // Now link Google account to this session
+          const { error: linkError } = await supabaseClient.auth.linkIdentity({
+            provider: 'google',
+            options: {
+              redirectTo: window.location.origin + window.location.pathname,
+              queryParams: { prompt: 'select_account' }
+            }
+          });
+          
+          if (linkError) {
+            console.error('Link error:', linkError);
+            showToast('Failed to link Google account. Please try again.', 'error');
+          } else {
+            showToast('Google account linked! You can now sign in with either method.', 'success');
+            // User is now signed in with linked account
+            await enterApp(signInData.user);
+          }
+          return;
+        }
       }
     }
-  });
+    
+    // Normal Google sign-in flow (no conflict detected)
+    const cleanUrl = window.location.origin + window.location.pathname;
+    
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: cleanUrl,
+        queryParams: {
+          prompt: 'select_account'
+        }
+      }
+    });
 
-  if (error) {
-    console.error('Google sign-in error:', error);
-    showToast('Google sign-in failed: ' + error.message, 'error');
+    if (error) {
+      console.error('Google sign-in error:', error);
+      showToast('Google sign-in failed: ' + error.message, 'error');
+    }
+    
+  } catch (err) {
+    console.error('Google auth error:', err);
+    showToast('Authentication error. Please try again.', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
   }
 }
 
@@ -246,11 +350,14 @@ async function enterApp(user) {
   const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Student';
   const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   const email = user.email || '';
-  const emailConfirmed = user.email_confirmed_at ? true : false;
-  const isGoogleUser = isOAuthUser(user);
+  
+  // IMPROVED: Check if user has a password (can change it) vs OAuth-only
+  const hasPassword = user.identities?.some(i => i.provider === 'email') || 
+                      user.app_metadata?.provider === 'email';
+  const isOAuthOnly = !hasPassword && hasGoogleIdentity(user);
 
   // Store the user type in a data attribute
-  document.body.setAttribute('data-auth-provider', isGoogleUser ? 'google' : 'email');
+  document.body.setAttribute('data-auth-provider', isOAuthOnly ? 'google-only' : (hasPassword ? 'email' : 'mixed'));
 
   // Update SIDEBAR user display
   const sidebarAvatar = document.getElementById('user-avatar-sidebar');
@@ -266,8 +373,8 @@ async function enterApp(user) {
   
   if (settingsName) {
     settingsName.value = name;
-    // Disable name editing for Google users
-    if (isGoogleUser) {
+    // Only disable name editing for pure OAuth users (no password at all)
+    if (isOAuthOnly) {
       settingsName.disabled = true;
       settingsName.title = "Name is managed by Google. Change it in your Google account.";
     } else {
@@ -276,19 +383,23 @@ async function enterApp(user) {
   }
   if (settingsEmail) settingsEmail.value = email;
 
-  // Show/hide password change button based on user type
+  // IMPROVED: Show/hide password change button based on whether user HAS a password
   const changePasswordBtn = document.getElementById('change-password-btn');
   if (changePasswordBtn) {
-    if (isGoogleUser) {
+    if (isOAuthOnly) {
+      // Pure Google user - no password exists
       changePasswordBtn.disabled = true;
-      changePasswordBtn.title = "Password is managed by Google. Use 'Sign in with Google' instead.";
+      changePasswordBtn.title = "This account uses Google Sign-In only. No password is set.";
       changePasswordBtn.style.opacity = '0.5';
       changePasswordBtn.style.cursor = 'not-allowed';
+      changePasswordBtn.innerHTML = '<i class="fas fa-key"></i> Password (Google Account)';
     } else {
+      // User has a password (either email-only OR email+Google linked)
       changePasswordBtn.disabled = false;
       changePasswordBtn.title = "";
       changePasswordBtn.style.opacity = '1';
       changePasswordBtn.style.cursor = 'pointer';
+      changePasswordBtn.innerHTML = '<i class="fas fa-key"></i> Change Password';
     }
   }
 
@@ -300,19 +411,37 @@ async function enterApp(user) {
   await loadUserDataFromSupabase();
   loadSettingsInputs();
 
-    const googleWarning = document.getElementById('google-name-warning');
+  const googleWarning = document.getElementById('google-name-warning');
   if (googleWarning) {
-    googleWarning.style.display = isGoogleUser ? 'flex' : 'none';
+    googleWarning.style.display = isOAuthOnly ? 'flex' : 'none';
   }
 }
 
 /* ════════════════════════════════════════════
    USER TYPE HELPERS
 ════════════════════════════════════════════ */
-function isOAuthUser(user) {
-  // Check if user signed in with Google (or other OAuth provider)
-  return user.app_metadata?.provider === 'google' || 
-         user.identities?.some(i => i.provider === 'google');
+function isOAuthOnlyUser(user) {
+  // Returns TRUE if user ONLY has OAuth (no password)
+  // Returns FALSE if user has password (even if they also have Google linked)
+  
+  // Check if user has an email confirmed password identity
+  const hasPasswordIdentity = user.identities?.some(identity => 
+    identity.provider === 'email' && identity.provider_id?.includes('email')
+  );
+  
+  // Also check if there's a password set (users can have both)
+  const isEmailProvider = user.app_metadata?.provider === 'email';
+  const hasPassword = user.email_confirmed_at && !isEmailProvider;
+  
+  // If they have any email/password identity, they can change password
+  const canChangePassword = hasPasswordIdentity || hasPassword || user.app_metadata?.provider === 'email';
+  
+  return !canChangePassword;
+}
+
+function hasGoogleIdentity(user) {
+  return user.identities?.some(i => i.provider === 'google') || 
+         user.app_metadata?.provider === 'google';
 }
 
 /* ════════════════════════════════════════════
@@ -433,7 +562,12 @@ async function saveProficiencyToSupabase(subject, percentage) {
    LOGOUT
 ════════════════════════════════════════════ */
 function handleLogout() {
-  if (supabaseClient) supabaseClient.auth.signOut();
+  if (supabaseClient) {
+    supabaseClient.auth.signOut();
+    // Clear any cached session data
+    localStorage.removeItem('sb-' + getConfig().supabaseUrl?.replace(/[^a-zA-Z0-9]/g, '') + '-auth-token');
+  }
+  
   currentUser = null;
   
   // Clear in-memory state
@@ -456,14 +590,12 @@ function handleLogout() {
   document.body.classList.remove('dark-mode');
   
   // RESET ALL AUTH BUTTONS AND FORMS
-  // Reset login button
   const loginBtn = document.getElementById('login-btn');
   if (loginBtn) {
     loginBtn.disabled = false;
     loginBtn.innerHTML = 'Sign in';
   }
   
-  // Reset signup button
   const signupBtn = document.getElementById('signup-btn');
   if (signupBtn) {
     signupBtn.disabled = false;
@@ -477,7 +609,7 @@ function handleLogout() {
   const signupError = document.getElementById('signup-error');
   if (signupError) signupError.classList.add('hidden');
   
-  // Clear input fields for better UX
+  // Clear input fields
   const loginEmail = document.getElementById('login-email');
   const loginPassword = document.getElementById('login-password');
   const signupName = document.getElementById('signup-name');
@@ -507,6 +639,10 @@ function handleLogout() {
   switchAuth('login');
   
   showToast('Signed out successfully');
+  
+  // Hard reload to clear any remaining state
+  // (optional - can be removed if not needed)
+  // setTimeout(() => window.location.reload(), 100);
 }
 
 /* ════════════════════════════════════════════
