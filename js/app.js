@@ -290,6 +290,116 @@ async function summarizeFromNoteModal() {
   await handleSummarize();
 }
 
+// Settings Functions
+function loadSettingsData() {
+  if (currentUser) {
+    const name = currentUser.user_metadata?.full_name || '';
+    const email = currentUser.email || '';
+    document.getElementById('settings-full-name').value = name;
+    document.getElementById('settings-email').value = email;
+  }
+}
+
+async function updateProfile() {
+  const newName = document.getElementById('settings-full-name').value.trim();
+  if (!newName) {
+    showToast('Please enter your full name.', 'error');
+    return;
+  }
+  
+  // Check if user is OAuth
+  const isGoogleUser = document.body.getAttribute('data-auth-provider') === 'google';
+  if (isGoogleUser) {
+    showToast('Name cannot be changed for Google accounts. Update your name in Google settings.', 'error');
+    return;
+  }
+  
+  const updateBtn = document.getElementById('update-profile-btn');
+  updateBtn.disabled = true;
+  updateBtn.innerHTML = '<span class="spinner"></span> Updating...';
+  
+  try {
+    const { error } = await supabaseClient.auth.updateUser({
+      data: { full_name: newName }
+    });
+    
+    if (error) throw error;
+    
+    // Update sidebar display
+    const sidebarName = document.getElementById('user-name-sidebar');
+    if (sidebarName) sidebarName.textContent = newName;
+    
+    // Update currentUser object
+    if (currentUser.user_metadata) {
+      currentUser.user_metadata.full_name = newName;
+    }
+    
+    showToast('Profile updated successfully!', 'success');
+  } catch(e) {
+    console.error('Profile update error:', e);
+    showToast(e.message || 'Failed to update profile.', 'error');
+  } finally {
+    updateBtn.disabled = false;
+    updateBtn.innerHTML = '<i class="fas fa-save"></i> Update Profile';
+  }
+}
+
+function openChangePasswordModal() {
+  const resetEmailDisplay = document.getElementById('reset-email-display');
+  if (resetEmailDisplay && currentUser && currentUser.email) {
+    resetEmailDisplay.textContent = currentUser.email;
+  }
+  document.getElementById('password-change-error').classList.add('hidden');
+  document.getElementById('change-password-modal').classList.remove('hidden');
+}
+
+function closeChangePasswordModal() {
+  document.getElementById('change-password-modal').classList.add('hidden');
+}
+
+async function sendPasswordResetEmail() {
+  const errorEl = document.getElementById('password-change-error');
+  errorEl.classList.add('hidden');
+  
+  // Check if user is OAuth
+  const isGoogleUser = document.body.getAttribute('data-auth-provider') === 'google';
+  if (isGoogleUser) {
+    showAuthErrorMsg(errorEl, 'Google accounts don\'t have passwords. Please use "Sign in with Google" instead.');
+    return;
+  }
+  
+  if (!currentUser || !currentUser.email) {
+    showAuthErrorMsg(errorEl, 'Unable to send reset email. Please try again later.');
+    return;
+  }
+  
+  const btn = document.getElementById('confirm-password-change-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Sending...';
+  
+  try {
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(currentUser.email, {
+      redirectTo: window.location.origin + window.location.pathname,
+    });
+    
+    if (error) throw error;
+    
+    showToast('Password reset email sent! Check your inbox.', 'success');
+    closeChangePasswordModal();
+  } catch(e) {
+    console.error('Password reset error:', e);
+    showAuthErrorMsg(errorEl, e.message || 'Failed to send reset email. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-envelope"></i> Send Reset Email';
+  }
+}
+
+function showAuthErrorMsg(el, message) {
+  el.textContent = message;
+  el.classList.remove('hidden');
+}
+
 // Dark Mode Functions
 function initDarkMode() {
   const darkModeToggle = document.getElementById('dark-mode-toggle');
@@ -350,6 +460,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('retake-quiz-btn')?.addEventListener('click', retakeQuiz);
   document.getElementById('chat-send-btn')?.addEventListener('click', sendChatMessage);
   document.getElementById('file-input')?.addEventListener('change', handleFileUpload);
+  
+  document.getElementById('update-profile-btn')?.addEventListener('click', updateProfile);
+  document.getElementById('change-password-btn')?.addEventListener('click', openChangePasswordModal);
+  document.getElementById('confirm-password-change-btn')?.addEventListener('click', sendPasswordResetEmail);
+  document.getElementById('update-password-submit-btn')?.addEventListener('click', updatePasswordWithToken);
   
   document.querySelectorAll('.chat-suggestion').forEach(btn => {
     btn.addEventListener('click', () => sendSuggestion(btn.getAttribute('data-suggestion')));
@@ -413,6 +528,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (event === 'SIGNED_IN' && session) enterApp(session.user);
     });
   }
+
+  initSupabase();
+  if (typeof handlePasswordReset === 'function') handlePasswordReset();
   
   initDarkMode();
   initMobileUI();

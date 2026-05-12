@@ -461,6 +461,50 @@
       </div>
     </div>
 
+    <!-- Change Password Modal -->
+    <div id="change-password-modal" class="modal-backdrop hidden" onclick="if(event.target===this)closeChangePasswordModal()">
+      <div class="modal" style="max-width: 450px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+          <h2><i class="fas fa-key"></i> Reset Password</h2>
+          <button onclick="closeChangePasswordModal()" style="width: 32px; height: 32px; border-radius: 50%; background: var(--surface-3); color: var(--ink-3); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <p style="margin-bottom: 1.5rem;">We'll send a password reset link to your email address: <strong id="reset-email-display"></strong></p>
+        <div id="password-change-error" class="auth-error hidden" style="margin-bottom: 1rem;"></div>
+        <div style="display: flex; gap: 10px; margin-top: 0.5rem;">
+          <button class="btn-outline" onclick="closeChangePasswordModal()" style="flex: 1;">Cancel</button>
+          <button class="btn-jade" id="confirm-password-change-btn" style="flex: 1;"><i class="fas fa-envelope"></i> Send Reset Email</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Update Password Modal (after reset email click) -->
+    <div id="update-password-modal" class="modal-backdrop hidden" onclick="if(event.target===this)closeUpdatePasswordModal()">
+      <div class="modal" style="max-width: 450px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+          <h2><i class="fas fa-key"></i> Create New Password</h2>
+          <button onclick="closeUpdatePasswordModal()" style="width: 32px; height: 32px; border-radius: 50%; background: var(--surface-3); color: var(--ink-3); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <p style="margin-bottom: 1.5rem;">Please enter your new password below.</p>
+        <div id="update-password-error" class="auth-error hidden" style="margin-bottom: 1rem;"></div>
+        <div class="field">
+          <label>New Password</label>
+          <input type="password" id="update-new-password" placeholder="Min. 8 characters" />
+        </div>
+        <div class="field">
+          <label>Confirm New Password</label>
+          <input type="password" id="update-confirm-password" placeholder="Confirm your new password" />
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 1rem;">
+          <button class="btn-outline" onclick="closeUpdatePasswordModal()" style="flex: 1;">Cancel</button>
+          <button class="btn-jade" id="update-password-submit-btn" style="flex: 1;"><i class="fas fa-check"></i> Update Password</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Note Viewer Modal -->
     <div id="note-viewer-modal" class="modal-backdrop hidden" onclick="if(event.target===this)closeNoteViewer()">
       <div class="modal" style="max-width: 700px; width: 100%; height: 85vh; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column;">
@@ -519,33 +563,44 @@
     <!-- Settings Page -->
     <div id="page-settings" class="page">
       <div class="page-header">
-        <h1><i class="fas fa-cog"></i> Settings</h1>
-        <p>Manage your API keys and preferences.</p>
+        <h1><i class="fas fa-user-cog"></i> Account Settings</h1>
+        <p>Manage your account preferences and data.</p>
       </div>
       <div style="max-width: 560px;">
+        <!-- Profile Information -->
         <div class="card" style="margin-bottom: 1.5rem;">
-          <div class="card-title">API Configuration</div>
-          <div class="config-field">
-            <label>Supabase URL</label>
-            <input type="text" id="settings-supabase-url" placeholder="https://xxxx.supabase.co" />
+          <div class="card-title">Profile Information</div>
+          <div class="field" style="margin-bottom: 1rem;">
+            <label>Full Name</label>
+            <input type="text" id="settings-full-name" placeholder="Your full name" />
+            <div id="google-name-warning" style="display: none; font-size: 0.75rem; color: var(--amber); margin-top: 4px;">
+              <i class="fas fa-info-circle"></i> Name is managed by Google.
+            </div>
           </div>
-          <div class="config-field">
-            <label>Supabase Anon Key</label>
-            <input type="password" id="settings-supabase-key" placeholder="eyJ..." />
+          <div class="field" style="margin-bottom: 1rem;">
+            <label>Email</label>
+            <input type="email" id="settings-email" disabled style="background: var(--surface-3); opacity: 0.7;" />
           </div>
-          <div class="config-field">
-            <label>Cerebras API Key</label>
-            <input type="password" id="settings-cerebras-key" placeholder="csk-..." />
-            <div class="config-hint">Get from <a href="https://cloud.cerebras.ai" target="_blank" style="color: var(--violet);">cloud.cerebras.ai</a> - Free tier: 14,400 requests/day</div>
-          </div>
-          <button class="btn-jade" id="save-settings-btn"><i class="fas fa-save"></i> Save Configuration</button>
+          <button class="btn-jade" id="update-profile-btn" style="margin-top: 0.5rem;"><i class="fas fa-save"></i> Update Profile</button>
         </div>
+
+        <!-- Password Management -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-title">Password</div>
+          <div class="field" style="margin-bottom: 0.5rem;">
+            <label>Password</label>
+            <input type="password" id="settings-password-placeholder" value="········" disabled style="background: var(--surface-3); opacity: 0.7;" />
+          </div>
+          <button class="btn-outline" id="change-password-btn" style="width: 100%;"><i class="fas fa-key"></i> Change Password</button>
+        </div>
+
+        <!-- Data Management -->
         <div class="card">
-          <div class="card-title">Data</div>
-          <p style="font-size: 0.875rem; color: var(--ink-3); margin-bottom: 1rem;">Manage your local study data stored in this browser.</p>
+          <div class="card-title">Data Management</div>
+          <p style="font-size: 0.875rem; color: var(--ink-3); margin-bottom: 1rem;">Export or delete your study data.</p>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button class="btn-outline" id="export-data-btn" style="font-size: 0.875rem; padding: 9px 16px;"><i class="fas fa-download"></i> Export Notes</button>
-            <button class="btn-outline" id="clear-data-btn" style="font-size: 0.875rem; padding: 9px 16px; color: var(--danger); border-color: var(--danger);"><i class="fas fa-trash-alt"></i> Clear All Data</button>
+            <button class="btn-outline" id="clear-data-btn" style="font-size: 0.875rem; padding: 9px 16px; color: var(--danger); border-color: var(--danger);"><i class="fas fa-trash-alt"></i> Delete All Data</button>
           </div>
         </div>
       </div>

@@ -246,14 +246,51 @@ async function enterApp(user) {
   const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Student';
   const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   const email = user.email || '';
+  const emailConfirmed = user.email_confirmed_at ? true : false;
+  const isGoogleUser = isOAuthUser(user);
 
-  // Update SIDEBAR user display (bottom left)
+  // Store the user type in a data attribute
+  document.body.setAttribute('data-auth-provider', isGoogleUser ? 'google' : 'email');
+
+  // Update SIDEBAR user display
   const sidebarAvatar = document.getElementById('user-avatar-sidebar');
   const sidebarName = document.getElementById('user-name-sidebar');
   const sidebarEmail = document.getElementById('user-email-sidebar');
   if (sidebarAvatar) sidebarAvatar.textContent = initials;
   if (sidebarName) sidebarName.textContent = name;
   if (sidebarEmail) sidebarEmail.textContent = email;
+
+  // Update SETTINGS profile display
+  const settingsName = document.getElementById('settings-full-name');
+  const settingsEmail = document.getElementById('settings-email');
+  
+  if (settingsName) {
+    settingsName.value = name;
+    // Disable name editing for Google users
+    if (isGoogleUser) {
+      settingsName.disabled = true;
+      settingsName.title = "Name is managed by Google. Change it in your Google account.";
+    } else {
+      settingsName.disabled = false;
+    }
+  }
+  if (settingsEmail) settingsEmail.value = email;
+
+  // Show/hide password change button based on user type
+  const changePasswordBtn = document.getElementById('change-password-btn');
+  if (changePasswordBtn) {
+    if (isGoogleUser) {
+      changePasswordBtn.disabled = true;
+      changePasswordBtn.title = "Password is managed by Google. Use 'Sign in with Google' instead.";
+      changePasswordBtn.style.opacity = '0.5';
+      changePasswordBtn.style.cursor = 'not-allowed';
+    } else {
+      changePasswordBtn.disabled = false;
+      changePasswordBtn.title = "";
+      changePasswordBtn.style.opacity = '1';
+      changePasswordBtn.style.cursor = 'pointer';
+    }
+  }
 
   const hour = new Date().getHours();
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
@@ -262,6 +299,20 @@ async function enterApp(user) {
   // Load all user data from Supabase
   await loadUserDataFromSupabase();
   loadSettingsInputs();
+
+    const googleWarning = document.getElementById('google-name-warning');
+  if (googleWarning) {
+    googleWarning.style.display = isGoogleUser ? 'flex' : 'none';
+  }
+}
+
+/* ════════════════════════════════════════════
+   USER TYPE HELPERS
+════════════════════════════════════════════ */
+function isOAuthUser(user) {
+  // Check if user signed in with Google (or other OAuth provider)
+  return user.app_metadata?.provider === 'google' || 
+         user.identities?.some(i => i.provider === 'google');
 }
 
 /* ════════════════════════════════════════════
@@ -479,6 +530,124 @@ function skipConfig() {
 }
 
 /* ════════════════════════════════════════════
+   PASSWORD RESET HANDLER
+════════════════════════════════════════════ */
+function handlePasswordReset() {
+  // Check if URL contains access_token (from password reset email)
+  const hash = window.location.hash;
+  if (hash && hash.includes('access_token')) {
+    // Parse the hash to get the access token
+    const params = new URLSearchParams(hash.substring(1));
+    const accessToken = params.get('access_token');
+    const refreshToken = params.get('refresh_token');
+    const type = params.get('type');
+    
+    if (accessToken && type === 'recovery') {
+      // Store the recovery tokens temporarily
+      sessionStorage.setItem('reset_access_token', accessToken);
+      sessionStorage.setItem('reset_refresh_token', refreshToken);
+      
+      // Show the update password modal
+      openUpdatePasswordModal();
+      
+      // Clean up the URL (remove hash)
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
+}
+
+function openUpdatePasswordModal() {
+  const modal = document.getElementById('update-password-modal');
+  if (modal) {
+    document.getElementById('update-new-password').value = '';
+    document.getElementById('update-confirm-password').value = '';
+    document.getElementById('update-password-error').classList.add('hidden');
+    modal.classList.remove('hidden');
+  }
+}
+
+function closeUpdatePasswordModal() {
+  const modal = document.getElementById('update-password-modal');
+  if (modal) modal.classList.add('hidden');
+  // Clear stored tokens
+  sessionStorage.removeItem('reset_access_token');
+  sessionStorage.removeItem('reset_refresh_token');
+}
+
+async function updatePasswordWithToken() {
+  const newPassword = document.getElementById('update-new-password').value;
+  const confirmPassword = document.getElementById('update-confirm-password').value;
+  const errorEl = document.getElementById('update-password-error');
+  
+  errorEl.classList.add('hidden');
+  
+  if (!newPassword || !confirmPassword) {
+    showResetErrorMsg(errorEl, 'Please fill in both fields.');
+    return;
+  }
+  
+  if (newPassword.length < 8) {
+    showResetErrorMsg(errorEl, 'Password must be at least 8 characters.');
+    return;
+  }
+  
+  if (newPassword !== confirmPassword) {
+    showResetErrorMsg(errorEl, 'Passwords do not match.');
+    return;
+  }
+  
+  const accessToken = sessionStorage.getItem('reset_access_token');
+  if (!accessToken) {
+    showResetErrorMsg(errorEl, 'Session expired. Please request a new password reset email.');
+    return;
+  }
+  
+  const btn = document.getElementById('update-password-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Updating...';
+  
+  try {
+    // Set the session with the recovery token
+    const { error: sessionError } = await supabaseClient.auth.setSession({
+      access_token: accessToken,
+      refresh_token: sessionStorage.getItem('reset_refresh_token')
+    });
+    
+    if (sessionError) throw sessionError;
+    
+    // Update the user's password
+    const { error } = await supabaseClient.auth.updateUser({
+      password: newPassword
+    });
+    
+    if (error) throw error;
+    
+    showToast('Password updated successfully! Please sign in with your new password.', 'success');
+    closeUpdatePasswordModal();
+    
+    // Sign out and redirect to login
+    await supabaseClient.auth.signOut();
+    sessionStorage.clear();
+    
+    setTimeout(() => {
+      window.location.href = window.location.origin;
+    }, 2000);
+    
+  } catch(e) {
+    console.error('Password update error:', e);
+    showResetErrorMsg(errorEl, e.message || 'Failed to update password. Please request a new reset link.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-check"></i> Update Password';
+  }
+}
+
+function showResetErrorMsg(el, message) {
+  el.textContent = message;
+  el.classList.remove('hidden');
+}
+
+/* ════════════════════════════════════════════
    INTERNAL HELPERS
 ════════════════════════════════════════════ */
 function isValidEmail(email) {
@@ -486,8 +655,10 @@ function isValidEmail(email) {
 }
 
 function resetBtn(btn, label) {
-  btn.disabled  = false;
-  btn.innerHTML = label;
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = label;
+  }
 }
 
 /**
@@ -528,7 +699,7 @@ function handleSupabaseAuthError(form, error) {
   } else if (msg.includes('network') || msg.includes('fetch')) {
     friendly = 'Network error. Please check your connection.';
   } else if (msg) {
-    friendly = msg; // fallback to raw message if unrecognised
+    friendly = msg;
   }
 
   showAuthError(form, friendly);
