@@ -53,18 +53,19 @@ async function makeCerebrasRequest(prompt) {
 
   try {
     const response = await fetch('https://api.cerebras.ai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${key}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'llama3.1-8b',
-        messages: [{ role: 'user', content: prompt }],
-        max_completion_tokens: 512,
-        temperature: 0.7
-      })
-    });
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${key}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'zai-glm-4.7',                // Your new model
+      reasoning_effort: "none",             // <-- THIS IS THE NEW LINE TO ADD
+      messages: [{ role: 'user', content: prompt }],
+      max_completion_tokens: 512,
+      temperature: 0.7
+    })
+  });
 
     if (response.status === 429) {
       console.warn('Rate limit hit, waiting 5 seconds...');
