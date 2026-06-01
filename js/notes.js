@@ -5,13 +5,75 @@ let currentViewingNote = null;
 let isEditingNote = false;
 
 function renderNotes() {
+  initFolders();
   const grid = document.getElementById('notes-grid');
-  if (appState.notes.length === 0) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon"><i class="fas fa-book-open"></i></div><h3>No saved notes yet</h3><p>Upload and summarize a document to create your first note.</p></div>`;
-    return;
+
+  const folders = appState.folders || [];
+  const allNotes = [...appState.notes].reverse();
+
+  // Notes that belong to NO folder
+  const unsortedNotes = allNotes.filter(n => !noteIsInAnyFolder(n.id));
+
+  let html = '';
+
+  // ── Folders section ──
+  if (folders.length > 0) {
+    html += `<div class="notes-section-label" style="grid-column:1/-1">
+      <i class="fas fa-folder" style="color:var(--amber)"></i> Folders
+    </div>`;
+    html += folders.map(f => {
+      const count = (f.noteIds || []).filter(id => appState.notes.find(n => n.id === id)).length;
+      return `
+      <div class="folder-card" data-folder-id="${f.id}"
+        ondragover="onFolderDragOver(event,'${f.id}')"
+        ondragleave="onFolderDragLeave('${f.id}')"
+        ondrop="onFolderDrop(event,'${f.id}')"
+        onclick="openFolderPanel('${f.id}')">
+        <div class="folder-card-icon"><i class="fas fa-folder-open"></i></div>
+        <div class="folder-card-body">
+          <div class="folder-card-name">${escHtml(f.name)}</div>
+          <div class="folder-card-count">${count} note${count !== 1 ? 's' : ''}</div>
+        </div>
+        <button class="btn-outline folder-delete-btn"
+          onclick="event.stopPropagation();deleteFolder('${f.id}')"
+          title="Delete folder"
+          style="padding:5px 9px;font-size:0.7rem;color:var(--danger);border-color:var(--danger);flex-shrink:0;margin-left:auto;">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>`;
+    }).join('');
   }
-  grid.innerHTML = [...appState.notes].reverse().map(n => `
-    <div class="note-card" onclick="openNote('${n.id}')">
+
+  // ── Unsorted notes section ──
+  if (appState.notes.length === 0) {
+    html += `<div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-icon"><i class="fas fa-book-open"></i></div>
+      <h3>No saved notes yet</h3>
+      <p>Upload and summarize a document to create your first note.</p>
+    </div>`;
+  } else {
+    if (folders.length > 0) {
+      html += `<div class="notes-section-label" style="grid-column:1/-1">
+        <i class="fas fa-file-alt" style="color:var(--violet)"></i> Unsorted Notes
+        ${unsortedNotes.length === 0 ? '<span style="font-size:0.75rem;color:var(--ink-4);font-weight:400;margin-left:6px;">— all notes are in folders</span>' : ''}
+      </div>`;
+    }
+    if (unsortedNotes.length > 0) {
+      html += unsortedNotes.map(n => buildNoteCard(n)).join('');
+    }
+  }
+
+  grid.innerHTML = html;
+}
+
+function buildNoteCard(n) {
+  return `
+    <div class="note-card" 
+      onclick="openNote('${n.id}')"
+      draggable="true"
+      ondragstart="onNoteDragStart(event,'${n.id}')"
+      ondragend="onNoteDragEnd(event)">
+      <div class="note-card-drag-hint"><i class="fas fa-grip-vertical"></i></div>
       <div class="note-card-title">${escHtml(n.title)}</div>
       <div class="note-card-preview">${escHtml(n.summary || '').substring(0, 120)}${(n.summary || '').length > 120 ? '...' : ''}</div>
       <div class="note-card-footer">
@@ -21,8 +83,7 @@ function renderNotes() {
       <div style="position: absolute; top: 12px; right: 12px;">
         <button class="btn-outline" onclick="event.stopPropagation(); deleteNote('${n.id}')" style="padding: 4px 8px; font-size: 0.7rem; color: var(--danger); border-color: var(--danger);"><i class="fas fa-trash-alt"></i></button>
       </div>
-    </div>
-  `).join('');
+    </div>`;
 }
 
 async function deleteNote(id) {
