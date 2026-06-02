@@ -499,6 +499,24 @@ async function loadUserDataFromSupabase() {
       appState.proficiency = profMap;
     }
 
+    // ── Folders ──
+    const { data: foldersData, error: foldersError } = await supabaseClient
+      .from('folders')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending: true });
+
+    if (foldersError) {
+      console.warn('Folders load error:', foldersError.message);
+    } else {
+      appState.folders = (foldersData || []).map(f => ({
+        id:       f.id,
+        name:     f.name,
+        note_ids: f.note_ids || [],
+        createdAt: f.created_at
+      }));
+    }
+
     // Re-render with fresh data
     if (typeof renderDashboard === 'function') renderDashboard();
     if (typeof renderNotes     === 'function') renderNotes();
@@ -559,6 +577,38 @@ async function saveProficiencyToSupabase(subject, percentage) {
 }
 
 /* ════════════════════════════════════════════
+   FOLDER SUPABASE HELPERS
+════════════════════════════════════════════ */
+async function saveFolderToSupabase(folder) {
+  if (!supabaseClient || !currentUser) return false;
+  const { error } = await supabaseClient.from('folders').insert({
+    id:       folder.id,
+    user_id:  currentUser.id,
+    name:     folder.name,
+    note_ids: folder.note_ids || []
+  });
+  if (error) { console.error('Folder save error:', error.message); return false; }
+  return true;
+}
+
+async function updateFolderInSupabase(folder) {
+  if (!supabaseClient || !currentUser) return false;
+  const { error } = await supabaseClient.from('folders')
+    .update({ name: folder.name, note_ids: folder.note_ids })
+    .eq('id', folder.id)
+    .eq('user_id', currentUser.id);
+  if (error) { console.error('Folder update error:', error.message); return false; }
+  return true;
+}
+
+async function deleteFolderFromSupabase(folderId) {
+  if (!supabaseClient || !currentUser) return;
+  const { error } = await supabaseClient.from('folders').delete()
+    .eq('id', folderId).eq('user_id', currentUser.id);
+  if (error) console.error('Folder delete error:', error.message);
+}
+
+/* ════════════════════════════════════════════
    LOGOUT
 ════════════════════════════════════════════ */
 function handleLogout() {
@@ -574,6 +624,7 @@ function handleLogout() {
   appState.notes       = [];
   appState.quizzes     = [];
   appState.proficiency = {};
+  appState.folders     = [];
   appState.currentSummary = null;
   
   // Hide AI Tutor FAB and panel

@@ -2027,183 +2027,111 @@ body.dark-mode #hamburger-btn {
   background: var(--surface-2);
   color: var(--ink);
 }
-/* ════════════════════════════════════════
-   FOLDER SYSTEM
-════════════════════════════════════════ */
+/* ════════════════════════════════════════════
+   FOLDER SYSTEM STYLES
+════════════════════════════════════════════ */
 
-/* Section labels inside the notes grid */
-.notes-section-label {
-  display: flex;
+/* Folder chip (clickable pill in notes header) */
+.folder-chip {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink-3);
-  padding: 0 2px 4px;
-  margin-top: 4px;
-}
-
-/* Folder cards in the notes grid */
-.folder-card {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px 18px;
+  gap: 4px;
+  padding: 7px 12px;
   background: var(--surface-2);
   border: 1.5px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 99px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ink-2);
   cursor: pointer;
   transition: var(--transition);
   user-select: none;
 }
-.folder-card:hover {
+.folder-chip:hover {
   border-color: var(--amber);
-  box-shadow: 0 0 0 3px rgba(245,158,11,0.12);
-  transform: translateY(-1px);
+  color: var(--ink);
+  background: var(--surface-3);
 }
-.folder-card.drag-over {
-  border-color: var(--jade);
-  background: var(--jade-soft);
-  box-shadow: 0 0 0 3px rgba(0,197,142,0.18);
-  transform: scale(1.01);
+.folder-chip.active {
+  border-color: var(--amber);
+  background: var(--amber-soft, rgba(245,158,11,0.1));
+  color: var(--ink);
 }
-.folder-card-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: var(--amber-soft);
+.folder-chip-name { max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.folder-chip-count {
+  background: var(--surface-3);
+  color: var(--ink-3);
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 99px;
+  margin-left: 2px;
+}
+.folder-chip-del {
+  background: none;
+  border: none;
+  color: var(--ink-4);
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 0.7rem;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.15s;
+  margin-left: 2px;
+}
+.folder-chip:hover .folder-chip-del { opacity: 1; }
+.folder-chip-del:hover { color: var(--danger); }
+
+/* Expanded folder panel */
+.folder-expanded-panel {
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem 1.5rem;
+}
+.folder-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 0;
+}
+
+/* Note action buttons — keep consistent size */
+.note-action-btn {
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
-  color: var(--amber);
-  flex-shrink: 0;
-  transition: var(--transition);
-}
-.folder-card:hover .folder-card-icon {
-  background: rgba(245,158,11,0.2);
-}
-.folder-card-body { flex: 1; min-width: 0; }
-.folder-card-name {
-  font-weight: 700;
-  font-size: 0.9375rem;
-  color: var(--ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.folder-card-count {
-  font-size: 0.775rem;
-  color: var(--ink-3);
-  margin-top: 2px;
 }
 
-/* Note cards — draggable hint */
-.note-card { position: relative; }
-.note-card-drag-hint {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  color: var(--border-med);
-  font-size: 0.8rem;
-  opacity: 0;
-  transition: opacity 0.15s;
-  pointer-events: none;
-}
-.note-card:hover .note-card-drag-hint { opacity: 1; }
-.note-card.dragging {
-  opacity: 0.45;
-  cursor: grabbing;
-  box-shadow: var(--shadow-lg);
-}
-
-/* ── Floating Folder Panel ── */
-.folder-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 360px;
-  max-width: 96vw;
-  height: 100vh;
-  background: var(--surface);
-  border-left: 1px solid var(--border-med);
-  box-shadow: -6px 0 32px rgba(60,50,120,0.12);
-  z-index: 1100;
-  display: flex;
-  flex-direction: column;
-  transform: translateX(110%);
-  transition: transform 0.26s cubic-bezier(0.4,0,0.2,1);
-}
-.folder-panel.open { transform: translateX(0); }
-
-.folder-panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.1rem 1.25rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface-2);
-  flex-shrink: 0;
-  gap: 8px;
-}
-
-.folder-panel-notes {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.folder-panel-note-item {
+/* Folder picker modal list items */
+.folder-picker-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
+  width: 100%;
+  padding: 11px 14px;
   background: var(--surface-2);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: var(--radius);
   cursor: pointer;
+  font-size: 0.875rem;
+  font-family: var(--font);
+  color: var(--ink);
+  text-align: left;
   transition: var(--transition);
 }
-.folder-panel-note-item:hover {
-  border-color: var(--violet);
-  background: var(--violet-soft);
+.folder-picker-item:hover {
+  border-color: var(--amber);
+  background: var(--surface-3);
 }
-.folder-panel-note-title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.folder-panel-note-meta {
-  font-size: 0.75rem;
-  color: var(--ink-3);
-  margin-top: 2px;
-}
-.folder-panel-empty {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: var(--ink-3);
-  font-size: 0.875rem;
-  line-height: 1.6;
+.folder-picker-item.current {
+  border-color: var(--jade);
+  background: var(--jade-soft, rgba(16,185,129,0.08));
 }
 
-/* Dark mode folder adjustments */
-body.dark-mode .folder-card { background: var(--surface-2); }
-body.dark-mode .folder-card.drag-over { background: rgba(0,197,142,0.07); }
-body.dark-mode .folder-panel { background: var(--surface); border-left-color: var(--border); }
-body.dark-mode .folder-panel-header { background: var(--surface-2); }
-body.dark-mode .folder-panel-note-item { background: var(--surface-2); }
-body.dark-mode .folder-panel-note-item:hover { background: var(--violet-soft); }
-
-/* Folder panel responsive */
-@media (max-width: 600px) {
-  .folder-panel { width: 100vw; }
-}
+/* Dark mode adjustments */
+body.dark-mode .folder-chip { background: var(--surface-2); }
+body.dark-mode .folder-chip.active { background: rgba(245,158,11,0.15); }
+body.dark-mode .folder-expanded-panel { background: var(--surface-2); }
+body.dark-mode .folder-picker-item { background: var(--surface-2); }
+body.dark-mode .folder-picker-item.current { background: rgba(16,185,129,0.12); }

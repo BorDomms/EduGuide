@@ -62,8 +62,7 @@ window.persistData = function() {
     localStorage.setItem('eg_data', JSON.stringify({
       notes: window.appState.notes,
       quizzes: window.appState.quizzes,
-      proficiency: window.appState.proficiency,
-      folders: window.appState.folders || []
+      proficiency: window.appState.proficiency
     }));
   }
 };
@@ -76,7 +75,6 @@ window.loadLocalData = function() {
       window.appState.notes = d.notes || [];
       window.appState.quizzes = d.quizzes || [];
       window.appState.proficiency = d.proficiency || {};
-      window.appState.folders = d.folders || [];
     }
   } catch(e) {}
 };
