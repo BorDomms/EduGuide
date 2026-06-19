@@ -194,46 +194,76 @@
   <!-- Main Content -->
   <main class="main-content">
 
-    <!-- Dashboard Page -->
+        <!-- Dashboard Page -->
     <div id="page-dashboard" class="page active">
-      <div class="page-header">
-        <h1 id="welcome-msg">Good morning <i class="fas fa-hand-peace"></i></h1>
-        <p>Here's your study overview.</p>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon jade"><i class="fas fa-file-alt"></i></div>
-          <div class="stat-value" id="stat-notes">0</div>
-          <div class="stat-label">Notes Created</div>
+      <div class="page-header dashboard-header-row">
+        <div>
+          <h1 id="welcome-msg">Good morning <i class="fas fa-hand-peace"></i></h1>
+          <p>Here's your study overview.</p>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon violet"><i class="fas fa-chart-simple"></i></div>
-          <div class="stat-value" id="stat-quizzes">0</div>
-          <div class="stat-label">Quizzes Taken</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon amber"><i class="fas fa-star"></i></div>
-          <div class="stat-value" id="stat-avg">—</div>
-          <div class="stat-label">Avg. Score</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon rose"><i class="fas fa-fire"></i></div>
-          <div class="stat-value" id="stat-streak">0</div>
-          <div class="stat-label">Day Streak</div>
+        <div class="aws-cta-block">
+          <span class="aws-cta-label"><i class="fab fa-aws" style="margin-right:5px;"></i>AWS Examinee? Identify your Confidence!</span>
+          <button class="btn-aws-test" onclick="openAWSConfidenceTest()">
+            <i class="fas fa-bolt"></i> Take Test
+          </button>
         </div>
       </div>
-      <div class="two-col">
-        <div class="card">
-          <div class="card-title">
-            Recent Notes
-            <button class="btn-outline" data-page="reviewer" style="padding: 6px 12px; font-size: 0.8rem;"><i class="fas fa-plus"></i> New</button>
+
+      <!-- Dashboard body: NEW LAYOUT -->
+      <div class="dashboard-body">
+
+        <!-- ROW 1: 4 tall stat cards (10% each) + Confidence Metrics (remaining) -->
+        <div class="dashboard-row-top">
+          <div class="stat-card-tall">
+            <div class="stat-icon-tall jade"><i class="fas fa-file-alt"></i></div>
+            <div class="stat-value-sm" id="stat-notes">0</div>
+            <div class="stat-label-sm">Notes Created</div>
           </div>
-          <div id="recent-notes-list"></div>
+          <div class="stat-card-tall">
+            <div class="stat-icon-tall violet"><i class="fas fa-chart-simple"></i></div>
+            <div class="stat-value-sm" id="stat-quizzes">0</div>
+            <div class="stat-label-sm">Quizzes Taken</div>
+          </div>
+          <div class="stat-card-tall">
+            <div class="stat-icon-tall amber"><i class="fas fa-star"></i></div>
+            <div class="stat-value-sm" id="stat-avg">—</div>
+            <div class="stat-label-sm">Avg. Score</div>
+          </div>
+          <div class="stat-card-tall">
+            <div class="stat-icon-tall rose"><i class="fas fa-fire"></i></div>
+            <div class="stat-value-sm" id="stat-streak">0</div>
+            <div class="stat-label-sm">Day Streak</div>
+          </div>
+          <div class="card confidence-card">
+            <div class="card-title confidence-card-title">
+              <span><i class="fas fa-brain" style="color:var(--violet);margin-right:10px;"></i>Confidence Metrics</span>
+              <span class="wip-badge">Work in Progress</span>
+            </div>
+            <div id="confidence-card-body" class="confidence-placeholder">
+              <div class="confidence-placeholder-icon">
+                <i class="fas fa-chart-bar" style="font-size: 2.5rem; color: var(--violet);"></i>
+              </div>
+              <p class="confidence-placeholder-title">Working in progress — Only for AWS Practitioner Takers!</p>
+              <p class="confidence-placeholder-desc">Take the test and see your analysis!</p>
+            </div>
+          </div>
         </div>
-        <div class="card">
-          <div class="card-title">Subject Proficiency</div>
-          <div id="proficiency-list"></div>
+
+        <!-- ROW 2: Recent Notes (left half) + Subject Proficiency (right half) -->
+        <div class="dashboard-row-bottom">
+          <div class="card half-card">
+            <div class="card-title">
+              Recent Notes
+              <button class="btn-outline" data-page="reviewer" style="padding: 6px 12px; font-size: 0.8rem;"><i class="fas fa-plus"></i> New</button>
+            </div>
+            <div id="recent-notes-list"></div>
+          </div>
+          <div class="card half-card">
+            <div class="card-title">Subject Proficiency</div>
+            <div id="proficiency-list"></div>
+          </div>
         </div>
+
       </div>
     </div>
 
@@ -619,6 +649,69 @@
     <!-- AI Tutor is now a floating panel, not a page; placeholder kept for showPage compatibility -->
     <div id="page-chat" class="page" style="display:none !important;"><div style="display:none;"></div></div>
 
+    <!-- AWS Confidence Test Modal -->
+    <div id="aws-confidence-modal" class="modal-backdrop hidden" onclick="if(event.target===this)closeAWSConfidenceTest()">
+      <div class="modal" style="max-width: 520px; width: 100%; padding: 0; overflow: hidden;">
+        <!-- Header -->
+        <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface-2);">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fab fa-aws" style="font-size: 1.4rem; color: #ff9900;"></i>
+            <div>
+              <h3 style="font-size: 1.05rem; font-weight: 700; margin: 0;">AWS Confidence Test</h3>
+              <p style="font-size: 0.75rem; color: var(--ink-3); margin: 0;">Assess your exam readiness</p>
+            </div>
+          </div>
+          <button onclick="closeAWSConfidenceTest()" style="width: 32px; height: 32px; border-radius: 50%; background: var(--surface-3); color: var(--ink-3); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <!-- Progress bar -->
+        <div id="aws-progress-wrapper" style="height: 4px; background: var(--surface-3); display: none;">
+          <div id="aws-progress-fill" style="height: 100%; background: var(--violet); border-radius: 99px; transition: width 0.35s ease; width: 0%;"></div>
+        </div>
+
+        <!-- Step 1: Exam Selection -->
+        <div id="aws-step-exam" style="padding: 2rem 1.5rem;">
+          <div style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem; color: #ff9900;"><i class="fab fa-aws"></i></div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem;">What Practitioner Exam are you taking?</h3>
+            <p style="font-size: 0.85rem; color: var(--ink-3); margin-bottom: 1.5rem;">Select your exam to begin the confidence assessment.</p>
+            <div style="display: flex; flex-direction: column; gap: 12px; max-width: 380px; margin: 0 auto;">
+              <button class="aws-exam-btn" onclick="startAWSConfidenceTest('ai-practitioner')">
+                <i class="fas fa-robot"></i>
+                <span>AI Cloud Practitioner Exam</span>
+              </button>
+              <button class="aws-exam-btn" onclick="startAWSConfidenceTest('cloud-practitioner')">
+                <i class="fas fa-cloud"></i>
+                <span>Cloud Practitioner Exam</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Questions -->
+        <div id="aws-step-questions" style="padding: 1.5rem; display: none;">
+          <div id="aws-question-area"></div>
+          <div style="display: flex; gap: 10px; justify-content: space-between; margin-top: 0.5rem;">
+            <button class="btn-outline" id="aws-prev-btn" onclick="awsPrevQuestion()" style="padding: 10px 18px;" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+            <button class="btn-jade" id="aws-next-btn" onclick="awsNextQuestion()" style="flex: unset; padding: 10px 24px; min-width: 130px;">Next <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 3: Results -->
+        <div id="aws-step-results" style="padding: 2rem 1.5rem; display: none;">
+          <div style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--jade);"><i class="fas fa-check-circle"></i></div>
+            <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem;">Assessment Complete</h3>
+            <p style="font-size: 0.9rem; color: var(--ink-3); margin-bottom: 1.25rem;">Your confidence profile has been saved.</p>
+            <div id="aws-results-summary" style="background: var(--surface-2); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1.25rem; text-align: left;"></div>
+            <button class="btn-jade" onclick="closeAWSConfidenceTest()" style="flex: unset; padding: 11px 28px; margin: 0 auto;"><i class="fas fa-check"></i> Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Settings Page -->
     <div id="page-settings" class="page">
       <div class="page-header">
@@ -664,9 +757,6 @@
         </div>
       </div>
     </div>
-
-  </main>
-</div>
 
 <!-- Floating AI Tutor -->
 <button id="tutor-fab" class="tutor-fab hidden" onclick="toggleTutorPanel()" title="AI Tutor">

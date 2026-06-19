@@ -521,6 +521,9 @@ async function loadUserDataFromSupabase() {
       }));
     }
 
+    // ── AWS Confidence Tests ──
+    await loadAWSTestsFromSupabase();
+
     // Re-render with fresh data
     if (typeof renderDashboard === 'function') renderDashboard();
     if (typeof renderNotes     === 'function') renderNotes();
@@ -870,6 +873,137 @@ async function updatePasswordWithToken() {
 function showResetErrorMsg(el, message) {
   el.textContent = message;
   el.classList.remove('hidden');
+}
+
+/* ════════════════════════════════════════════
+         PREDICTION API CALL AND SAVE
+════════════════════════════════════════════ */
+
+async function savePredictionToSupabase(testId, prediction) {
+  if (!supabaseClient || !currentUser) return false;
+  
+  try {
+    const { error } = await supabaseClient
+      .from('aws_confidence_tests')
+      .update({
+        confidence_level: prediction.confidence_level,
+        confidence_score: prediction.confidence_score,
+        avg_module_score: prediction.avg_module_score,
+        prediction_gap: prediction.gap,
+        recommendation: prediction.recommendation,
+        prediction_status: prediction.status
+      })
+      .eq('id', testId)
+      .eq('user_id', currentUser.id);
+    
+    if (error) {
+      console.error('Prediction save error:', error.message);
+      return false;
+    }
+    
+    console.log('✅ Prediction saved to Supabase');
+    return true;
+  } catch(e) {
+    console.error('Prediction save exception:', e);
+    return false;
+  }
+}
+
+// Update loadAWSTestsFromSupabase to include predictions
+async function loadAWSTestsFromSupabase() {
+  if (!supabaseClient || !currentUser) return;
+  
+  try {
+    const { data, error } = await supabaseClient
+      .from('aws_confidence_tests')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('completed_at', { ascending: false })
+      .limit(1);
+
+    if (error) {
+      if (error.code === '42P01') {
+        console.log('aws_confidence_tests table does not exist yet.');
+        return;
+      }
+      console.warn('AWS tests load error:', error.message);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      const t = data[0];
+      appState.awsTestResult = {
+        id: t.id,
+        examType: t.exam_type,
+        examName: t.exam_type === 'ai-practitioner' ? 'AI Cloud Practitioner' : 'Cloud Practitioner',
+        preparedness: t.preparedness,
+        motiv: t.motiv,
+        focus: t.focus,
+        module_scores: t.module_scores || [],
+        completedAt: new Date(t.completed_at).getTime(),
+        // Prediction fields
+        confidence_level: t.confidence_level,
+        confidence_score: t.confidence_score,
+        avg_module_score: t.avg_module_score,
+        prediction_gap: t.prediction_gap,
+        recommendation: t.recommendation,
+        prediction_status: t.prediction_status
+      };
+      
+      try {
+        localStorage.setItem('eg_aws_test_result', JSON.stringify(appState.awsTestResult));
+      } catch (e) { /* ignore */ }
+    }
+  } catch(e) {
+    console.error('AWS tests load error:', e);
+  }
+}
+
+// Update saveAWSTestToSupabase to include prediction fields
+async function saveAWSTestToSupabase(result) {
+  if (!supabaseClient || !currentUser) return false;
+  
+  try {
+    const testData = {
+      user_id: currentUser.id,
+      exam_type: result.examType,
+      preparedness: result.preparedness,
+      motiv: result.motiv,
+      focus: result.focus,
+      module_scores: result.module_scores,
+      completed_at: new Date(result.completedAt).toISOString()
+    };
+    
+    // If prediction data exists, include it
+    if (result.confidence_level) {
+      testData.confidence_level = result.confidence_level;
+      testData.confidence_score = result.confidence_score;
+      testData.avg_module_score = result.avg_module_score;
+      testData.prediction_gap = result.prediction_gap;
+      testData.recommendation = result.recommendation;
+      testData.prediction_status = result.prediction_status;
+    }
+    
+    const { data, error } = await supabaseClient
+      .from('aws_confidence_tests')
+      .insert(testData)
+      .select();
+    
+    if (error) {
+      console.error('AWS test save error:', error.message);
+      return false;
+    }
+    
+    if (data && data.length > 0) {
+      // Store the ID for later updates
+      result.id = data[0].id;
+    }
+    
+    return true;
+  } catch(e) {
+    console.error('AWS test save exception:', e);
+    return false;
+  }
 }
 
 /* ════════════════════════════════════════════

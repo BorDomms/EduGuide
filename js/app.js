@@ -163,20 +163,7 @@ function showPage(name) {
   });
 }
 
-// Settings
-function loadSettingsInputs() {
-  const cfg = getConfig();
-  
-  // Check if elements exist before setting values
-  const urlInput = document.getElementById('settings-supabase-url');
-  const keyInput = document.getElementById('settings-supabase-key');
-  const cerebrasInput = document.getElementById('settings-cerebras-key');
-  
-  if (urlInput) urlInput.value = cfg.supabaseUrl || '';
-  if (keyInput) keyInput.value = cfg.supabaseKey || '';
-  if (cerebrasInput) cerebrasInput.value = cfg.cerebrasKey || '';
-}
-
+// app.js - Updated saveSettingsConfig (no API URL)
 function saveSettingsConfig() {
   const url = document.getElementById('settings-supabase-url').value.trim();
   const key = document.getElementById('settings-supabase-key').value.trim();
@@ -188,7 +175,30 @@ function saveSettingsConfig() {
   
   appState.demoMode = false;
   if (url && key) initSupabase();
-  showToast('Settings saved! Using Cerebras for AI', 'success');
+  showToast('Settings saved!', 'success');
+}
+
+// app.js - Updated loadSettingsInputs (no API URL)
+function loadSettingsInputs() {
+  const cfg = getConfig();
+  
+  const urlInput = document.getElementById('settings-supabase-url');
+  const keyInput = document.getElementById('settings-supabase-key');
+  const cerebrasInput = document.getElementById('settings-cerebras-key');
+  
+  if (urlInput) urlInput.value = cfg.supabaseUrl || '';
+  if (keyInput) keyInput.value = cfg.supabaseKey || '';
+  if (cerebrasInput) cerebrasInput.value = cfg.cerebrasKey || '';
+}
+
+// app.js - Updated getConfig
+function getConfig() {
+  return {
+    supabaseUrl: localStorage.getItem('eg_supabase_url') || '',
+    supabaseKey: localStorage.getItem('eg_supabase_key') || '',
+    cerebrasKey: localStorage.getItem('eg_cerebras_key') || '',
+    apiUrl: localStorage.getItem('eg_api_url') || 'https://aws-confidence-api.onrender.com/predict'
+  };
 }
 
 function exportData() {
@@ -200,10 +210,12 @@ function exportData() {
 }
 
 function clearAllData() {
-  if (!confirm('Clear all notes, quiz history, and proficiency data? This cannot be undone.')) return;
+  if (!confirm('Clear all notes, quiz history, proficiency data, and AWS test results? This cannot be undone.')) return;
   appState.notes = [];
   appState.quizzes = [];
   appState.proficiency = {};
+  appState.awsTestResult = null;
+  try { localStorage.removeItem('eg_aws_test_result'); } catch(e) {}
   persistData();
   renderDashboard();
   renderNotes();
@@ -536,7 +548,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  initSupabase();
   if (typeof handlePasswordReset === 'function') handlePasswordReset();
   
   initDarkMode();

@@ -29,14 +29,6 @@ window.showToast = function(msg, type = '') {
   setTimeout(() => t.remove(), 3200);
 };
 
-window.getConfig = function() {
-  return {
-    supabaseUrl: localStorage.getItem('eg_supabase_url') || '',
-    supabaseKey: localStorage.getItem('eg_supabase_key') || '',
-    cerebrasKey: localStorage.getItem('eg_cerebras_key') || ''
-  };
-};
-
 window.saveConfigToLocal = function(url, key, cerebras) {
   if (url) localStorage.setItem('eg_supabase_url', url);
   if (key) localStorage.setItem('eg_supabase_key', key);
