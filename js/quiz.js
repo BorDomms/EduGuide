@@ -288,6 +288,7 @@ function showResults() {
     circle.style.stroke = pct >= 75 ? 'var(--jade)' : pct >= 50 ? 'var(--amber)' : 'var(--rose)';
   }, 100);
 
+  // Create quiz entry
   const quizEntry = { 
     id: uid(), 
     topic: topic, 
@@ -297,28 +298,45 @@ function showResults() {
     date: Date.now(),
     date_taken: Date.now()
   };
-  appState.quizzes.push(quizEntry);
   
-  // Save to Supabase (if logged in)
-  if (typeof supabaseClient !== 'undefined' && supabaseClient && typeof currentUser !== 'undefined' && currentUser) {
-    saveQuizToSupabase(quizEntry);
+  // Add to local state first
+  appState.quizzes.push(quizEntry);
+  console.log(`📝 Quiz added to appState.quizzes: ${appState.quizzes.length} total quizzes`);
+  
+  // Try to save to Supabase
+  if (typeof window.supabaseClient !== 'undefined' && window.supabaseClient && 
+      typeof window.currentUser !== 'undefined' && window.currentUser) {
+    console.log('☁️ Attempting to save quiz to Supabase...');
+    saveQuizToSupabase(quizEntry).then(success => {
+      if (success) {
+        console.log('✅ Quiz successfully saved to Supabase!');
+        showToast('Quiz results saved to cloud! 💾', 'success');
+      } else {
+        console.log('⚠️ Quiz saved to localStorage only (cloud save failed)');
+        showToast('Quiz saved locally (cloud sync failed)', 'warning');
+      }
+    });
   } else {
+    console.log('💾 Not logged in, saving quiz to localStorage only');
     persistData();
+    showToast('Quiz saved locally! 💾', 'success');
   }
   
+  // Update proficiency
   const prev = appState.proficiency[topic] || null;
   const newPct = prev !== null ? Math.round((prev + pct) / 2) : pct;
   appState.proficiency[topic] = newPct;
   
   // Save proficiency to Supabase
-  if (typeof supabaseClient !== 'undefined' && supabaseClient && typeof currentUser !== 'undefined' && currentUser) {
+  if (typeof window.supabaseClient !== 'undefined' && window.supabaseClient && 
+      typeof window.currentUser !== 'undefined' && window.currentUser) {
     saveProficiencyToSupabase(topic, newPct);
   } else {
     persistData();
   }
   
   renderDashboard();
-  renderPastQuizzes(); // Update the past quizzes list
+  renderPastQuizzes();
 }
 
 function retakeQuiz() {
@@ -333,6 +351,8 @@ function retakeQuiz() {
 function renderPastQuizzes() {
   const container = document.getElementById('past-quizzes-list');
   if (!container) return;
+  
+  console.log('Rendering past quizzes. Total in appState:', appState.quizzes.length);
   
   if (appState.quizzes.length === 0) {
     container.innerHTML = '<div class="empty-state" style="padding: 1rem; text-align: center; font-size: 0.875rem; color: var(--ink-3);">No quizzes taken yet. Generate and take a quiz to see your history!</div>';
@@ -364,10 +384,13 @@ async function retakePastQuiz(index) {
   const sortedQuizzes = [...appState.quizzes].sort((a, b) => (b.date_taken || b.date) - (a.date_taken || a.date));
   const quiz = sortedQuizzes[index];
   
-  showToast('Loading quiz content...', '');
+  // Try to find the original note that matches this topic
+  let matchingNote = appState.notes.find(n => n.title === quiz.topic);
   
-  // Find the original note that matches this topic
-  const matchingNote = appState.notes.find(n => n.title === quiz.topic || (n.summary && n.summary.includes(quiz.topic)));
+  // If not found by exact title, try partial match
+  if (!matchingNote) {
+    matchingNote = appState.notes.find(n => n.title && quiz.topic && n.title.includes(quiz.topic) || quiz.topic.includes(n.title));
+  }
   
   if (matchingNote) {
     appState.currentSummary = {
@@ -376,8 +399,52 @@ async function retakePastQuiz(index) {
       keyPoints: matchingNote.key_points || matchingNote.keyPoints || [],
       title: matchingNote.title
     };
-    handleGenerateQuiz();
+    await handleGenerateQuiz();
   } else {
-    showToast('Original content not found. Generate a new quiz from the Reviewer tab.', 'error');
+    // If no matching note found, try to generate a quiz from the summary if available
+    if (matchingNote && matchingNote.summary) {
+      appState.currentSummary = {
+        text: matchingNote.original_text || '',
+        summary: matchingNote.summary,
+        keyPoints: matchingNote.key_points || [],
+        title: matchingNote.title
+      };
+      await handleGenerateQuiz();
+    } else {
+      showToast('Original content not found for this quiz. Generate a new quiz from the Reviewer tab.', 'error');
+    }
   }
 }
+
+// Clear all quizzes
+function clearAllQuizzes() {
+  if (!confirm('Delete all quiz history? This cannot be undone.')) return;
+  
+  appState.quizzes = [];
+  
+  if (typeof supabaseClient !== 'undefined' && supabaseClient && typeof currentUser !== 'undefined' && currentUser) {
+    // Delete all quizzes from Supabase
+    supabaseClient
+      .from('quizzes')
+      .delete()
+      .eq('user_id', currentUser.id)
+      .then(({ error }) => {
+        if (error) console.error('Error deleting quizzes:', error);
+        else showToast('All quizzes cleared!', 'success');
+      });
+  } else {
+    persistData();
+    showToast('All quizzes cleared!', 'success');
+  }
+  
+  renderPastQuizzes();
+  renderDashboard();
+}
+
+// Attach clear quizzes event listener
+document.addEventListener('DOMContentLoaded', () => {
+  const clearBtn = document.getElementById('clear-quizzes-btn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', clearAllQuizzes);
+  }
+});

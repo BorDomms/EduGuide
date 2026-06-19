@@ -166,9 +166,15 @@ function showPage(name) {
 // Settings
 function loadSettingsInputs() {
   const cfg = getConfig();
-  document.getElementById('settings-supabase-url').value = cfg.supabaseUrl;
-  document.getElementById('settings-supabase-key').value = cfg.supabaseKey;
-  document.getElementById('settings-cerebras-key').value = cfg.cerebrasKey;
+  
+  // Check if elements exist before setting values
+  const urlInput = document.getElementById('settings-supabase-url');
+  const keyInput = document.getElementById('settings-supabase-key');
+  const cerebrasInput = document.getElementById('settings-cerebras-key');
+  
+  if (urlInput) urlInput.value = cfg.supabaseUrl || '';
+  if (keyInput) keyInput.value = cfg.supabaseKey || '';
+  if (cerebrasInput) cerebrasInput.value = cfg.cerebrasKey || '';
 }
 
 function saveSettingsConfig() {

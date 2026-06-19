@@ -367,13 +367,12 @@ async function enterApp(user) {
   if (sidebarName) sidebarName.textContent = name;
   if (sidebarEmail) sidebarEmail.textContent = email;
 
-  // Update SETTINGS profile display
+  // Update SETTINGS profile display - with null checks
   const settingsName = document.getElementById('settings-full-name');
   const settingsEmail = document.getElementById('settings-email');
   
   if (settingsName) {
     settingsName.value = name;
-    // Only disable name editing for pure OAuth users (no password at all)
     if (isOAuthOnly) {
       settingsName.disabled = true;
       settingsName.title = "Name is managed by Google. Change it in your Google account.";
@@ -387,14 +386,12 @@ async function enterApp(user) {
   const changePasswordBtn = document.getElementById('change-password-btn');
   if (changePasswordBtn) {
     if (isOAuthOnly) {
-      // Pure Google user - no password exists
       changePasswordBtn.disabled = true;
       changePasswordBtn.title = "This account uses Google Sign-In only. No password is set.";
       changePasswordBtn.style.opacity = '0.5';
       changePasswordBtn.style.cursor = 'not-allowed';
       changePasswordBtn.innerHTML = '<i class="fas fa-key"></i> Password (Google Account)';
     } else {
-      // User has a password (either email-only OR email+Google linked)
       changePasswordBtn.disabled = false;
       changePasswordBtn.title = "";
       changePasswordBtn.style.opacity = '1';
@@ -405,11 +402,16 @@ async function enterApp(user) {
 
   const hour = new Date().getHours();
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('welcome-msg').textContent = `${greet}, ${name.split(' ')[0]} 👋`;
+  const welcomeMsg = document.getElementById('welcome-msg');
+  if (welcomeMsg) welcomeMsg.textContent = `${greet}, ${name.split(' ')[0]} 👋`;
 
   // Load all user data from Supabase
   await loadUserDataFromSupabase();
-  loadSettingsInputs();
+  
+  // Only load settings inputs if the elements exist
+  if (document.getElementById('settings-supabase-url')) {
+    loadSettingsInputs();
+  }
 
   const googleWarning = document.getElementById('google-name-warning');
   if (googleWarning) {
@@ -465,14 +467,14 @@ async function loadUserDataFromSupabase() {
     }
 
     // ── Quizzes ──
-    const { data: quizzesData, error: quizzesError } = await supabaseClient
+    const { data: quizzesData, error: quizzesError } = await window.supabaseClient
       .from('quizzes')
       .select('*')
-      .eq('user_id', currentUser.id)
+      .eq('user_id', window.currentUser.id)
       .order('date_taken', { ascending: false });
 
     if (quizzesError) {
-      console.warn('Quizzes load error:', quizzesError.message);
+      console.warn('⚠️ Quizzes load error:', quizzesError.message);
     } else {
       appState.quizzes = (quizzesData || []).map(q => ({
         id:        q.id,
@@ -480,9 +482,11 @@ async function loadUserDataFromSupabase() {
         score:     q.score,
         correct:   q.correct,
         total:     q.total,
+        questions: q.questions || [],
         date:      q.date_taken,
         date_taken: q.date_taken
       }));
+      console.log(`✅ Loaded ${appState.quizzes.length} quizzes from Supabase`);
     }
 
     // ── Proficiency ──
@@ -552,18 +556,52 @@ async function deleteNoteFromSupabase(noteId) {
   if (error) console.error('Note delete error:', error.message);
 }
 
+// auth.js - Updated saveQuizToSupabase function
+
 async function saveQuizToSupabase(quiz) {
-  if (!supabaseClient || !currentUser) return;
-  const { error } = await supabaseClient.from('quizzes').insert({
-    id:         quiz.id,
-    user_id:    currentUser.id,
-    topic:      quiz.topic,
-    score:      quiz.score,
-    correct:    quiz.correct,
-    total:      quiz.total,
-    date_taken: new Date(quiz.date).toISOString()
-  });
-  if (error) console.error('Quiz save error:', error.message);
+  // Use the global supabaseClient and currentUser
+  if (typeof window.supabaseClient === 'undefined' || !window.supabaseClient || 
+      typeof window.currentUser === 'undefined' || !window.currentUser) {
+    console.log('Not saving quiz to Supabase: missing client or user');
+    persistData();
+    return false;
+  }
+  
+  try {
+    console.log('Attempting to save quiz to Supabase:', quiz);
+    
+    // Prepare data for Supabase - match the column types exactly
+    const quizData = {
+      id: quiz.id || uid(),
+      user_id: window.currentUser.id,
+      topic: quiz.topic || 'Untitled Quiz',
+      score: quiz.score || 0,
+      correct: quiz.correct || 0,
+      total: quiz.total || 0,
+      date_taken: quiz.date_taken ? new Date(quiz.date_taken).toISOString() : new Date().toISOString()
+    };
+    
+    console.log('Sending to Supabase:', quizData);
+    
+    const { data, error } = await window.supabaseClient
+      .from('quizzes')
+      .insert(quizData)
+      .select();
+    
+    if (error) {
+      console.error('Quiz save error:', error.message);
+      console.error('Error details:', error);
+      persistData();
+      return false;
+    }
+    
+    console.log('✅ Quiz saved successfully to Supabase:', data);
+    return true;
+  } catch(e) {
+    console.error('❌ Quiz save exception:', e);
+    persistData();
+    return false;
+  }
 }
 
 async function saveProficiencyToSupabase(subject, percentage) {

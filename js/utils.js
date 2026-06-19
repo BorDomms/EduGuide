@@ -57,13 +57,15 @@ window.appState = {
 };
 
 window.persistData = function() {
-  // Only save to localStorage if not logged into Supabase
-  if (!supabaseClient || !currentUser) {
+  try {
     localStorage.setItem('eg_data', JSON.stringify({
-      notes: window.appState.notes,
-      quizzes: window.appState.quizzes,
-      proficiency: window.appState.proficiency
+      notes: window.appState.notes || [],
+      quizzes: window.appState.quizzes || [],
+      proficiency: window.appState.proficiency || {}
     }));
+    console.log('Data persisted to localStorage');
+  } catch(e) {
+    console.error('Failed to persist data:', e);
   }
 };
 
@@ -75,6 +77,9 @@ window.loadLocalData = function() {
       window.appState.notes = d.notes || [];
       window.appState.quizzes = d.quizzes || [];
       window.appState.proficiency = d.proficiency || {};
+      console.log(`Loaded ${window.appState.quizzes.length} quizzes from localStorage`);
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error('Failed to load data:', e);
+  }
 };
