@@ -817,6 +817,34 @@ a { color: inherit; text-decoration: none; }
 .quiz-trigger-text p { font-size: 0.875rem; color: var(--ink-2); font-weight: 500; }
 .quiz-trigger-text span { font-size: 0.8125rem; color: var(--ink-3); }
 
+/* Quiz Count Selection */
+.quiz-count-option {
+  transition: all 0.2s ease;
+}
+
+.quiz-count-option:hover {
+  border-color: var(--violet);
+  background: var(--violet-soft);
+  transform: translateY(-2px);
+}
+
+.quiz-count-option.selected {
+  border-color: var(--violet);
+  background: var(--violet-soft);
+  color: var(--violet);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+}
+
+#custom-quiz-count {
+  transition: var(--transition);
+}
+
+#custom-quiz-count:focus {
+  border-color: var(--violet);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--violet-soft);
+}
+
 /* ════════════════════════════════════════
    QUIZ PAGE
 ════════════════════════════════════════ */

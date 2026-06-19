@@ -269,6 +269,9 @@ function buildNoteCard(n) {
         <span class="note-card-badge"><i class="fas fa-list-ul"></i> ${(n.key_points || n.keyPoints || []).length} key points</span>
       </div>
       <div style="position:absolute;top:10px;right:10px;display:flex;gap:6px;">
+        <button class="btn-outline note-action-btn" title="Generate Quiz" onclick="event.stopPropagation();openNoteAndGenerateQuiz('${n.id}')" style="padding:4px 8px;font-size:0.7rem;color:var(--violet);border-color:var(--violet);">
+          <i class="fas fa-question-circle"></i>
+        </button>
         <button class="btn-outline note-action-btn" title="Move to folder" onclick="event.stopPropagation();openFolderPicker('${n.id}')" style="padding:4px 8px;font-size:0.7rem;color:var(--amber);border-color:var(--amber);">
           <i class="fas fa-folder-plus"></i>
         </button>
@@ -278,6 +281,23 @@ function buildNoteCard(n) {
       </div>
     </div>
   `;
+}
+
+// Quick quiz generation from note card
+function openNoteAndGenerateQuiz(noteId) {
+  const note = appState.notes.find(n => n.id === noteId);
+  if (!note) {
+    showToast('Note not found.', 'error');
+    return;
+  }
+  
+  // Open the note first
+  openNote(noteId);
+  
+  // Then trigger the quiz generation
+  setTimeout(() => {
+    generateQuizFromNote();
+  }, 300);
 }
 
 /* ── Toggle expanded folder view ── */
@@ -500,4 +520,142 @@ function confirmCreateFolder() {
   if (!name) { showToast('Please enter a folder name.', 'error'); return; }
   closeCreateFolderModal();
   createFolder(name);
+}
+
+let selectedQuizCount = 5;
+let quizNoteId = null;
+
+// Open the quiz count modal from a note
+function generateQuizFromNote() {
+  if (!currentViewingNote) {
+    showToast('No note selected.', 'error');
+    return;
+  }
+  
+  // Store the note ID for quiz generation
+  quizNoteId = currentViewingNote.id;
+  
+  // Reset selection
+  selectedQuizCount = 5;
+  document.querySelectorAll('.quiz-count-option').forEach(btn => {
+    btn.classList.remove('selected');
+    if (parseInt(btn.getAttribute('data-count')) === 5) {
+      btn.classList.add('selected');
+    }
+  });
+  document.getElementById('custom-quiz-count').value = '';
+  
+  // Show the modal
+  document.getElementById('quiz-count-modal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('custom-quiz-count').focus(), 100);
+}
+
+// Close the quiz count modal
+function closeQuizCountModal() {
+  document.getElementById('quiz-count-modal').classList.add('hidden');
+  quizNoteId = null;
+}
+
+// Select a predefined quiz count
+function selectQuizCount(count) {
+  selectedQuizCount = count;
+  
+  // Update button styles
+  document.querySelectorAll('.quiz-count-option').forEach(btn => {
+    btn.classList.remove('selected');
+    if (parseInt(btn.getAttribute('data-count')) === count) {
+      btn.classList.add('selected');
+    }
+  });
+  
+  // Clear custom input
+  document.getElementById('custom-quiz-count').value = '';
+}
+
+// Set custom quiz count from input
+function setCustomQuizCount() {
+  const input = document.getElementById('custom-quiz-count');
+  const value = parseInt(input.value);
+  
+  if (!value || value < 1 || value > 25) {
+    showToast('Please enter a number between 1 and 25.', 'error');
+    return;
+  }
+  
+  selectedQuizCount = value;
+  
+  // Deselect all preset buttons
+  document.querySelectorAll('.quiz-count-option').forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  
+  showToast(`Custom count: ${value} questions`, 'success');
+}
+
+// Confirm and generate the quiz
+async function confirmQuizGeneration() {
+  if (!quizNoteId) {
+    showToast('No note selected.', 'error');
+    return;
+  }
+  
+  // Find the note
+  const note = appState.notes.find(n => n.id === quizNoteId);
+  if (!note) {
+    showToast('Note not found.', 'error');
+    return;
+  }
+  
+  // Close the modal
+  closeQuizCountModal();
+  
+  // Set the current summary from the note
+  appState.currentSummary = {
+    text: note.original_text || note.originalText || '',
+    summary: note.summary || '',
+    keyPoints: note.key_points || note.keyPoints || [],
+    title: note.title || 'Untitled Note'
+  };
+  
+  // Update the question count selectors
+  const countSelect = document.getElementById('quiz-question-count');
+  const countSelectLanding = document.getElementById('quiz-question-count-landing');
+  
+  if (countSelect) {
+    // Find the closest option value
+    let closestOption = null;
+    let closestDiff = Infinity;
+    Array.from(countSelect.options).forEach(opt => {
+      const val = parseInt(opt.value);
+      const diff = Math.abs(val - selectedQuizCount);
+      if (diff < closestDiff) {
+        closestDiff = diff;
+        closestOption = opt;
+      }
+    });
+    if (closestOption) countSelect.value = closestOption.value;
+  }
+  
+  if (countSelectLanding) {
+    let closestOption = null;
+    let closestDiff = Infinity;
+    Array.from(countSelectLanding.options).forEach(opt => {
+      const val = parseInt(opt.value);
+      const diff = Math.abs(val - selectedQuizCount);
+      if (diff < closestDiff) {
+        closestDiff = diff;
+        closestOption = opt;
+      }
+    });
+    if (closestOption) countSelectLanding.value = closestOption.value;
+  }
+  
+  // Show a loading toast
+  showToast(`Generating ${selectedQuizCount} questions from "${note.title}"...`, '');
+  
+  // Call the quiz generation
+  await handleGenerateQuiz();
+  
+  // Switch to quiz page
+  showPage('quiz');
 }

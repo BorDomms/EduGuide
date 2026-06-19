@@ -551,11 +551,67 @@
           </div>
         </div>
         
-        <div style="padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; flex-shrink: 0;">
-          <button class="btn-outline" onclick="closeNoteViewer()" style="padding: 8px 16px;">Close</button>
-          <button id="viewer-edit-btn" class="btn-jade" onclick="enterEditMode()" style="padding: 8px 16px; flex: unset;"><i class="fas fa-edit"></i> Edit Note</button>
-          <button id="viewer-save-btn" class="btn-jade" onclick="saveNoteEdit()" style="padding: 8px 16px; flex: unset; display: none;"><i class="fas fa-save"></i> Save Changes</button>
-          <button id="viewer-cancel-btn" class="btn-outline" onclick="cancelEdit()" style="padding: 8px 16px; display: none;">Cancel</button>
+        <div style="padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: space-between; flex-shrink: 0; flex-wrap: wrap;">
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-jade" onclick="generateQuizFromNote()" style="padding: 8px 16px; flex: unset;">
+              <i class="fas fa-question-circle"></i> Generate Quiz
+            </button>
+            <button class="btn-outline" onclick="closeNoteViewer()" style="padding: 8px 16px;">Close</button>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button id="viewer-edit-btn" class="btn-jade" onclick="enterEditMode()" style="padding: 8px 16px; flex: unset;"><i class="fas fa-edit"></i> Edit Note</button>
+            <button id="viewer-save-btn" class="btn-jade" onclick="saveNoteEdit()" style="padding: 8px 16px; flex: unset; display: none;"><i class="fas fa-save"></i> Save Changes</button>
+            <button id="viewer-cancel-btn" class="btn-outline" onclick="cancelEdit()" style="padding: 8px 16px; display: none;">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz Question Count Modal -->
+    <div id="quiz-count-modal" class="modal-backdrop hidden" onclick="if(event.target===this)closeQuizCountModal()">
+      <div class="modal" style="max-width: 420px; width: 100%;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+          <h2 style="margin: 0;"><i class="fas fa-question-circle" style="color: var(--violet);"></i> Generate Quiz</h2>
+          <button onclick="closeQuizCountModal()" style="width: 32px; height: 32px; border-radius: 50%; background: var(--surface-3); color: var(--ink-3); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <p style="color: var(--ink-3); margin-bottom: 1.5rem; font-size: 0.9rem;">
+          How many questions would you like for this quiz?
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+          <label style="font-size: 0.875rem; font-weight: 500; color: var(--ink-2);">Number of Questions:</label>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="quiz-count-option" data-count="3" onclick="selectQuizCount(3)" style="flex: 1; min-width: 60px; padding: 10px 12px; background: var(--surface-2); border: 2px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: var(--font); color: var(--ink);">
+              3
+            </button>
+            <button class="quiz-count-option" data-count="5" onclick="selectQuizCount(5)" style="flex: 1; min-width: 60px; padding: 10px 12px; background: var(--surface-2); border: 2px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: var(--font); color: var(--ink);">
+              5
+            </button>
+            <button class="quiz-count-option" data-count="8" onclick="selectQuizCount(8)" style="flex: 1; min-width: 60px; padding: 10px 12px; background: var(--surface-2); border: 2px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: var(--font); color: var(--ink);">
+              8
+            </button>
+            <button class="quiz-count-option" data-count="10" onclick="selectQuizCount(10)" style="flex: 1; min-width: 60px; padding: 10px 12px; background: var(--surface-2); border: 2px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: var(--font); color: var(--ink);">
+              10
+            </button>
+            <button class="quiz-count-option" data-count="15" onclick="selectQuizCount(15)" style="flex: 1; min-width: 60px; padding: 10px 12px; background: var(--surface-2); border: 2px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: var(--font); color: var(--ink);">
+              15
+            </button>
+            <button class="quiz-count-option" data-count="20" onclick="selectQuizCount(20)" style="flex: 1; min-width: 60px; padding: 10px 12px; background: var(--surface-2); border: 2px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: var(--font); color: var(--ink);">
+              20
+            </button>
+            <button class="quiz-count-option" data-count="25" onclick="selectQuizCount(25)" style="flex: 1; min-width: 60px; padding: 10px 12px; background: var(--surface-2); border: 2px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: var(--font); color: var(--ink);">
+              25
+            </button>
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 4px;">
+            <input type="number" id="custom-quiz-count" placeholder="Custom number..." min="1" max="25" style="flex: 1; padding: 10px 14px; background: var(--surface-2); border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; font-family: var(--font); color: var(--ink); width: 100%;">
+            <button class="btn-jade" onclick="setCustomQuizCount()" style="padding: 10px 18px; flex: unset;"><i class="fas fa-check"></i> Set</button>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 0.5rem;">
+          <button class="btn-outline" onclick="closeQuizCountModal()" style="flex: 1;">Cancel</button>
+          <button class="btn-jade" id="confirm-quiz-count-btn" onclick="confirmQuizGeneration()" style="flex: 2;"><i class="fas fa-magic"></i> Generate Quiz</button>
         </div>
       </div>
     </div>
