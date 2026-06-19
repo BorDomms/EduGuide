@@ -403,7 +403,7 @@ async function enterApp(user) {
   const hour = new Date().getHours();
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   const welcomeMsg = document.getElementById('welcome-msg');
-  if (welcomeMsg) welcomeMsg.textContent = `${greet}, ${name.split(' ')[0]} 👋`;
+  if (welcomeMsg) welcomeMsg.textContent = `${greet}, ${name.split(' ')[0]}`;
 
   // Load all user data from Supabase
   await loadUserDataFromSupabase();

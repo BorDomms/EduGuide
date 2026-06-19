@@ -167,7 +167,7 @@
 
     <div class="sidebar-label" style="margin-top: 8px;">Assistant</div>
     <div style="padding: 8px 12px; font-size: 0.8rem; color: var(--ink-4); line-height: 1.5;">
-      <i class="fas fa-comment-dots"></i> Open the AI Tutor from the <strong style="color:var(--ink-3);">Reviewer</strong> or <strong style="color:var(--ink-3);">Notes</strong> tab.
+      <i class="fas fa-comment-dots"></i> Open the AI Tutor from the <strong style="color:var(--ink-3);">Summarizer</strong> or <strong style="color:var(--ink-3);">Notes</strong> tab.
     </div>
 
     <div style="flex: 1;"></div>
@@ -240,7 +240,7 @@
     <!-- Reviewer Page -->
     <div id="page-reviewer" class="page">
       <div class="page-header">
-        <h1><i class="fas fa-file-alt"></i> Reviewer</h1>
+        <h1><i class="fas fa-file-alt"></i> Summarizer</h1>
         <p>Paste your notes or upload a document — AI will summarize it with key points.</p>
       </div>
 
@@ -510,7 +510,7 @@
 
     <!-- Note Viewer Modal -->
     <div id="note-viewer-modal" class="modal-backdrop hidden" onclick="if(event.target===this)closeNoteViewer()">
-      <div class="modal" style="max-width: 700px; width: 100%; height: 85vh; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column;">
+      <div class="modal" style="max-width: 900px; width: 100%; height: 85vh; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column;">
         <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface-2); flex-shrink: 0;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <i class="fas fa-file-alt" style="color: var(--violet);"></i>
@@ -668,7 +668,7 @@
   </main>
 </div>
 
-<!-- Floating AI Tutor (visible on reviewer & notes pages only) -->
+<!-- Floating AI Tutor -->
 <button id="tutor-fab" class="tutor-fab hidden" onclick="toggleTutorPanel()" title="AI Tutor">
   <i class="fas fa-brain"></i>
   <span id="tutor-fab-label">AI Tutor</span>
